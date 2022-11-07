@@ -18,7 +18,6 @@
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "6.0.*",
         "symfony/console": "6.0.*",
-        "symfony/dotenv": "6.0.*",
         "symfony/expression-language": "6.0.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.0.*",
@@ -85,6 +84,7 @@
         }
     },
     "require-dev": {
+        "symfony/dotenv": "6.0.*",
         "symfony/maker-bundle": "^1.47"
     }
 }
