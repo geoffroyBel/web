@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     mercure: 'object.getMercureOptions()',
    // mercure: ["private" => true],
     collectionOperations: [
-        "post" ,// => ["security" => "is_granted('IS_AUTHENTICATED_FULLY')"],
+        "post" => ["security" => "is_granted('IS_AUTHENTICATED_FULLY')"],
         "get"
     ],
     itemOperations: [
@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         "put" => ["security" => "is_granted('IS_AUTHENTICATED_FULLY')"],
     ]
 )]
-// #[ApiFilter(SearchPrestationFilter::class)]
+#[ApiFilter(SearchPrestationFilter::class)]
 class Prestation
 {
     #[ORM\Id]
@@ -183,23 +183,23 @@ class Prestation
         return $this;
     }
 
-    // public function toModel(): \App\Model\Prestation
-    // {
-    //     $model = new \App\Model\Prestation();
-    //     $model->name = $this->name;
-    //     // $model->authorName = $this->author->getFullName();
-    //     // $model->publishedAt = $this->publishedAt;
-    //     // $model->slug = $this->slug;
-    //     // $model->summary = $this->summary;
+    public function toModel(): \App\Model\Prestation
+    {
+        $model = new \App\Model\Prestation();
+        $model->name = $this->name;
+        // $model->authorName = $this->author->getFullName();
+        // $model->publishedAt = $this->publishedAt;
+        // $model->slug = $this->slug;
+        // $model->summary = $this->summary;
 
-    //     // foreach ($this->comments as $comment) {
-    //     //     $postComment = new PostComment();
-    //     //     $postComment->content = $comment->getContent();
-    //     //     $postComment->authorName = $comment->getAuthor()->getFullName();
+        // foreach ($this->comments as $comment) {
+        //     $postComment = new PostComment();
+        //     $postComment->content = $comment->getContent();
+        //     $postComment->authorName = $comment->getAuthor()->getFullName();
 
-    //     //     $model->comments[] = $postComment;
-    //     // }
+        //     $model->comments[] = $postComment;
+        // }
 
-    //     return $model;
-    // }
+        return $model;
+    }
 }
