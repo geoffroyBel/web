@@ -12,7 +12,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 
-// use App\Filter\SearchPrestationFilter;
+use App\Filter\SearchPrestationFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PrestationRepository::class)]
@@ -54,8 +54,8 @@ class Prestation
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $created = null;
 
-    // #[ORM\ManyToOne(inversedBy: 'prestations')]
-    // private ?User $owner = null;
+    #[ORM\ManyToOne(inversedBy: 'prestations')]
+    private ?User $owner = null;
 
 
 
@@ -72,7 +72,7 @@ class Prestation
     {
         $topics = [];
         $topics[] = "/api/prestations/". $this->getId();
-        //$topics[] = '/api/users/'.$this->getOwner()?->getId().'/prestations/'. $this->getId(); 
+        $topics[] = '/api/users/'.$this->getOwner()?->getId().'/prestations/'. $this->getId(); 
         // the '@=' prefix is required when using expressions for arguments in topics
         // $topic1 = '@=iri(object)';
         // $topic2 = '@=iri(object.getOwner()) ~ "/?topic=" ~ escape(iri(object))';
@@ -171,17 +171,17 @@ class Prestation
         return $this;
     }
 
-    // public function getOwner(): ?User
-    // {
-    //     return $this->owner;
-    // }
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
 
-    // public function setOwner(?User $owner): self
-    // {
-    //     $this->owner = $owner;
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
     // public function toModel(): \App\Model\Prestation
     // {
