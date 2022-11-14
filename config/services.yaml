@@ -22,9 +22,25 @@ services:
 
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
+  App\Serializer\UserContextBuilder:
+    decorates: "api_platform.serializer.context_builder"
+    arguments: ['@App\Serializer\UserContextBuilder.inner']
+
   app.token_authenticator:
     class: App\Security\TokenAuthenticator
     parent: lexik_jwt_authentication.security.jwt_authenticator
+
+  App\EventListener\AuthenticationSuccessListener:
+    tags:
+      - {
+          name: kernel.event_listener,
+          event: lexik_jwt_authentication.on_authentication_success,
+          method: onAuthenticationSuccessResponse,
+        }
+
+  App\Security\MercureTokenGenerator:
+    arguments:
+      $secret: "%env(MERCURE_JWT_SECRET)%"
 
   JoliCode\Elastically\IndexNameMapper:
     arguments:
