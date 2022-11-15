@@ -11,10 +11,21 @@
 // // start the Stimulus application
 // import './bootstrap';
 import React from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import Signin from "./Signin";
+import Signup from "./Signup";
 
 const App = () => {
-	return <Signin />;
+	const location = useLocation();
+	return (
+		<AnimatePresence exitBeforeEnter>
+			<Routes {...{ location }} key={location.pathname}>
+				<Route path='/signup' element={<Signup />} />
+				<Route path='/signin' element={<Signin />} />
+			</Routes>
+		</AnimatePresence>
+	);
 };
 
 export default App;

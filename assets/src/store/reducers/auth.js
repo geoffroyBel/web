@@ -1,5 +1,5 @@
 import User from "../../models/User";
-import { SIGN_IN, FETCH_USER } from "../types";
+import { SIGN_IN, FETCH_USER, SIGN_UP } from "../types";
 
 const initialStates = {
 	error: null,
@@ -18,6 +18,7 @@ export default (state = initialStates, action) => {
 				loading: false,
 			};
 		case FETCH_USER:
+		case SIGN_UP:
 			return {
 				...state,
 				error: null,

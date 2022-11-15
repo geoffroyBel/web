@@ -76,21 +76,8 @@ export const signIn =
 				},
 				{ withCredentials: false }
 			);
-			// window.localStorage.setItem("token", token);
-			// window.localStorage.setItem("id", JSON.stringify(id));
 			console.log(token);
 			dispatch({ type: SIGN_IN, payload: { token, id } });
-			// const { data } = await api.get(`/users/${id}`, { withCredentials: true });
-
-			// const user = new User(
-			// 	data.id,
-			// 	data.username,
-			// 	data.email,
-			// 	data.password,
-			// 	data.shoppingCart.id
-			// );
-
-			// dispatch({ type: SIGN_IN, payload: { token, user } });
 			// completion("prestation");
 		} catch (e) {
 			dispatch({
@@ -105,7 +92,7 @@ export const signUp =
 	async (dispatch) => {
 		dispatch({ type: IS_LOADING, payload: true });
 		try {
-			const res = await api.post("/users", {
+			const { data } = await api.post("/users", {
 				username,
 				name: username,
 				password,
@@ -113,16 +100,9 @@ export const signUp =
 				email,
 			});
 
-			const user = new User(
-				res.data.id,
-				username,
-				email,
-				password,
-				res.data.shoppingCart.id
-			);
 			dispatch({ type: IS_LOADING, payload: false });
-			dispatch({ type: SIGN_UP, payload: user });
-			completion("signIn");
+			dispatch({ type: SIGN_UP, payload: data });
+			//completion("signIn");
 		} catch (e) {
 			dispatch({ type: IS_LOADING, payload: false });
 			dispatch({
