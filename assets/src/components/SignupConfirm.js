@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,9 +12,9 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { motion } from "framer-motion";
-import { useFormik } from "formik";
+import { useFormik, useField } from "formik";
 import { connect } from "react-redux";
-import * as yup from "yup";
+import * as Yup from "yup";
 import * as authActions from "../store/actions/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -34,32 +34,34 @@ function Copyright(props) {
 		</Typography>
 	);
 }
-const validationSchema = yup.object({
-	email: yup
-		.string("Enter your email")
-		.email("Enter a valid email")
-		.required("Email is required"),
-	password: yup
-		.string("Enter your password")
-		.min(8, "Password should be of minimum 8 characters length")
+const validationSchema = Yup.object({
+	confirmCode: Yup.string("Enter your password")
+		.min(3, "Password should be of minimum 8 characters length")
 		.required("Password is required"),
 });
-
-const Signin = ({ signIn }) => {
+const MyTextInput = ({ label, ...props }) => {
+	const [field, meta] = useField(props);
+	return (
+		<TextField
+			{...field}
+			{...props}
+			label={label}
+			error={meta.touched && Boolean(meta.error)}
+			helperText={meta.touched && meta.error}
+		/>
+	);
+};
+const SignupConfirm = ({ signUpConfirm, auth }) => {
+	const { user } = auth;
 	const navigate = useNavigate();
+
 	const formik = useFormik({
-		initialValues: {
-			email: "rastakongoner@gmail.com",
-			username: "rasta",
-			phone: "+033611259067",
-			password: "11111111",
-		},
+		initialValues: { confirmCode: "" },
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			signIn(values, () => navigate("/home"));
+			signUpConfirm({ ...values, userId: user.id }, () => navigate("/home"));
 		},
 	});
-
 	const containerVariants = {
 		hidden: {
 			x: "-100vw",
@@ -101,7 +103,7 @@ const Signin = ({ signIn }) => {
 					<LockOutlinedIcon />
 				</Avatar> */}
 				<Typography component='h1' variant='h5'>
-					Sign in
+					Confirm code
 				</Typography>
 				<Box
 					component='form'
@@ -110,50 +112,21 @@ const Signin = ({ signIn }) => {
 					sx={{ mt: 1 }}>
 					<TextField
 						margin='normal'
-						required
-						fullWidth
-						id='username'
-						label='User name'
-						name='username'
-						autoComplete='username'
-						value={formik.values.username}
-						onChange={formik.handleChange}
-						error={formik.touched.username && Boolean(formik.errors.username)}
-						helperText={formik.touched.username && formik.errors.username}
+						required={true}
+						fullWidth={true}
+						id='confirmCode'
+						label='Confirmation Code'
+						name='confirmCode'
+						autoComplete='confirmCode'
 						autoFocus
-					/>
-					<TextField
-						margin='normal'
-						required
-						fullWidth
-						id='email'
-						label='Email Address'
-						name='email'
-						autoComplete='email'
-						value={formik.values.email}
+						value={formik.values.confirmCode}
 						onChange={formik.handleChange}
-						error={formik.touched.email && Boolean(formik.errors.email)}
-						helperText={formik.touched.email && formik.errors.email}
-						autoFocus
+						error={
+							formik.touched.confirmCode && Boolean(formik.errors.confirmCode)
+						}
+						helperText={formik.touched.confirmCode && formik.errors.confirmCode}
 					/>
-					<TextField
-						margin='normal'
-						required
-						fullWidth
-						name='password'
-						label='Password'
-						type='password'
-						id='password'
-						value={formik.values.password}
-						onChange={formik.handleChange}
-						error={formik.touched.password && Boolean(formik.errors.password)}
-						helperText={formik.touched.password && formik.errors.password}
-						autoComplete='current-password'
-					/>
-					<FormControlLabel
-						control={<Checkbox value='remember' color='primary' />}
-						label='Remember me'
-					/>
+
 					<Box
 						component={motion.div}
 						initial={{ opacity: 0.3 }}
@@ -166,7 +139,7 @@ const Signin = ({ signIn }) => {
 							fullWidth
 							variant='contained'
 							sx={{ mt: 3, mb: 2 }}>
-							Sign In
+							Confirm Code
 						</Button>
 					</Box>
 
@@ -188,5 +161,7 @@ const Signin = ({ signIn }) => {
 		</Container>
 	);
 };
-
-export default connect(null, authActions)(Signin);
+function mapStateToProps({ auth }) {
+	return { auth };
+}
+export default connect(mapStateToProps, authActions)(SignupConfirm);

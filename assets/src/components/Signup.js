@@ -184,7 +184,7 @@ export const FormikStepper = ({ children, step: stepNumber, ...props }) => {
 		</Formik>
 	);
 };
-const Signup = ({ signUp, awsProfile, confirmSignUp }) => {
+const Signup = ({ signUp, confirmSignUp }) => {
 	/* <Field
 							id='username'
 							label='User Name'
@@ -231,7 +231,9 @@ const Signup = ({ signUp, awsProfile, confirmSignUp }) => {
 					//validationSchema={validationSchema}
 				>
 					<FormikStep
-						onSubmit={(values) => signUp(values, navigate)}
+						onSubmit={(values) =>
+							signUp(values, () => navigate("/signupConfirm"))
+						}
 						validationSchema={Yup.object({
 							username: Yup.string("Enter your password")
 								.min(3, "Password should be of minimum 8 characters length")
@@ -345,9 +347,4 @@ const Signup = ({ signUp, awsProfile, confirmSignUp }) => {
 		</Container>
 	);
 };
-function mapStateToProps(state) {
-	const { awsProfile } = state;
-	console.log(awsProfile);
-	return { awsProfile };
-}
-export default connect(mapStateToProps, authActions)(Signup);
+export default connect(null, authActions)(Signup);

@@ -4,6 +4,7 @@ import { SIGN_IN, FETCH_USER, SIGN_UP } from "../types";
 const initialStates = {
 	error: null,
 	token: null,
+	id: null,
 	user: null,
 	loading: false,
 };

@@ -1,6 +1,7 @@
 import User from "../../models/User";
 import api from "../../api/heroku";
 import { FETCH_USER, SIGN_IN } from "../types";
+import { async } from "regenerator-runtime";
 
 export const SIGN_UP = "SIGN_UP";
 export const ERROR_AUTH = "ERROR_AUTH";
@@ -76,9 +77,10 @@ export const signIn =
 				},
 				{ withCredentials: false }
 			);
+
 			console.log(token);
 			dispatch({ type: SIGN_IN, payload: { token, id } });
-			// completion("prestation");
+			completion();
 		} catch (e) {
 			dispatch({
 				type: ERROR_AUTH,
@@ -88,9 +90,10 @@ export const signIn =
 		}
 	};
 export const signUp =
-	({ username, password, email }) =>
+	({ username, password, email }, completion = () => {}) =>
 	async (dispatch) => {
 		dispatch({ type: IS_LOADING, payload: true });
+
 		try {
 			const { data } = await api.post("/users", {
 				username,
@@ -102,7 +105,7 @@ export const signUp =
 
 			dispatch({ type: IS_LOADING, payload: false });
 			dispatch({ type: SIGN_UP, payload: data });
-			//completion("signIn");
+			completion();
 		} catch (e) {
 			dispatch({ type: IS_LOADING, payload: false });
 			dispatch({
@@ -117,13 +120,38 @@ export const signUp =
 			);
 		}
 	};
-
+export const signUpConfirm =
+	({ confirmCode, userId }, completion = () => {}) =>
+	async (dispatch) => {
+		dispatch({ type: IS_LOADING, payload: true });
+		try {
+			const { data } = await api.put(`/users/${userId}/confirmation-code`, {
+				retypedConfirmationCode: Number(confirmCode),
+			});
+			console.log(data);
+			dispatch({ type: IS_LOADING, payload: false });
+			dispatch({ type: SIGN_UP, payload: data });
+			completion();
+		} catch (e) {
+			dispatch({ type: IS_LOADING, payload: false });
+			dispatch({
+				type: ERROR_AUTH,
+				payload: errorFunc(e),
+			});
+			dispatch(
+				updateSyncErrors("user", {
+					username: " ",
+					password: " ",
+				})
+			);
+		}
+	};
 export const errorFunc = (e) => {
 	if (!e.response)
 		return `Internal Error Sorry!!: \n ${e.toString().substr(0, 50)}}`;
 	console.log("Auth Error errrrrr");
 	console.log(e);
-
+	console.log(e.message);
 	return (
 		e.response.data["hydra:description"] ||
 		e.response.data.detail ||

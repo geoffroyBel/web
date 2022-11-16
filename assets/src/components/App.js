@@ -15,14 +15,21 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Signin from "./Signin";
 import Signup from "./Signup";
+import SignupConfirm from "./SignupConfirm";
+import AuthProvider from "./AuthProvider";
+const Home = () => <div>Dashboard</div>;
 
 const App = () => {
 	const location = useLocation();
 	return (
 		<AnimatePresence exitBeforeEnter>
 			<Routes {...{ location }} key={location.pathname}>
-				<Route path='/signup' element={<Signup />} />
-				<Route path='/signin' element={<Signin />} />
+				<Route path='/' element={<AuthProvider {...{ location }} />}>
+					<Route path='signup' element={<Signup />} />
+					<Route path='signin' element={<Signin />} />
+					<Route path='signupConfirm' element={<SignupConfirm />} />
+					<Route path='home' element={<Home />} />
+				</Route>
 			</Routes>
 		</AnimatePresence>
 	);
