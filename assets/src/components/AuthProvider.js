@@ -14,7 +14,7 @@ export default function AuthProvider({ location }) {
 
 		if (!token && !excludeRoutes.includes(pathname)) {
 			navigate("/signin");
-		} else if (pathname === "signupConfirm" && !user) {
+		} else if (pathname === "/signupConfirm" && !user) {
 			navigate("/signup");
 		}
 	}, [pathname, token]);
