@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use App\Controller\ConfirmationCodeAction;
 use App\Controller\ResetPasswordAction;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -41,6 +42,14 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
         //     'denormalization_context'=>['groups'=>'put-reset-password'],
         //     'validation_groups'=>['Default', 'put-reset-password']
         // ],
+        'put_confirmation_code' => [
+           // 'security' => "is_granted('IS_AUTHENTICATED_FULLY') and object == user",
+            'method' => 'put',
+            'path'=>'/users/{id}/confirmation-code',
+            'controller' => ConfirmationCodeAction::class,
+            'denormalization_context'=>['groups'=>'put-confirmation-code'],
+            'validation_groups'=>['Default', 'put-confirmation-code']
+        ],
     ],
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -128,6 +137,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 40, nullable: true)]
     private ?string $confirmationToken = null;
 
+
+    #[ORM\Column(nullable: true)]
+    private ?int $confirmationCode = null;
+
+    #[Groups(["put-confirmation-code"])]
+    #[Assert\NotBlank(groups: ["put-confirmation-code"])]
+    private ?int $retypedConfirmationCode = null;
+
     public function __construct()
     {
         $this->prestations = new ArrayCollection();
@@ -196,7 +213,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    public function getRetypedConfirmationCode()
+    {
+        return $this->retypedConfirmationCode;
+    }
 
+    public function setRetypedConfirmationCode($retypedConfirmationCode): void
+    {
+        $this->retypedConfirmationCode = $retypedConfirmationCode;
+    }
     public function getRetypedPassword()
     {
         return $this->retypedPassword;
@@ -332,6 +357,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setConfirmationToken(?string $confirmationToken): self
     {
         $this->confirmationToken = $confirmationToken;
+
+        return $this;
+    }
+
+    public function getConfirmationCode(): ?int
+    {
+        return $this->confirmationCode;
+    }
+
+    public function setConfirmationCode(?int $confirmationCode): self
+    {
+        $this->confirmationCode = $confirmationCode;
 
         return $this;
     }
