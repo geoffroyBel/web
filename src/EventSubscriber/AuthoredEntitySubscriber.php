@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 
 
 use ApiPlatform\Core\EventListener\EventPriorities;
+use App\Entity\AuthoredEntityInterface;
 use App\Entity\Prestation;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +42,7 @@ class AuthoredEntitySubscriber implements EventSubscriberInterface
         $entity = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
 
-        if((!$entity instanceof Prestation) || $method !== Request::METHOD_POST){
+        if((!$entity instanceof AuthoredEntityInterface) || $method !== Request::METHOD_POST){
             return;
         }
         $user = $this->tokenStorage->getToken()->getUser();

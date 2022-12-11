@@ -17,6 +17,7 @@ import Signin from "./Signin";
 import Signup from "./Signup";
 import SignupConfirm from "./SignupConfirm";
 import AuthProvider from "./AuthProvider";
+import Profile from "../screens/Profile";
 const Home = () => <div>Dashboard</div>;
 
 const App = () => {
@@ -28,7 +29,7 @@ const App = () => {
 					<Route path='signup' element={<Signup />} />
 					<Route path='signin' element={<Signin />} />
 					<Route path='signupConfirm' element={<SignupConfirm />} />
-					<Route path='home' element={<Home />} />
+					<Route path='home' element={<Profile />} />
 				</Route>
 			</Routes>
 		</AnimatePresence>

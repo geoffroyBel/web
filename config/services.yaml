@@ -105,3 +105,5 @@ services:
 
         # you can also restrict listeners to a specific Doctrine connection
         connection: "default"
+  App\Services\StripeService:
+    arguments: ["%env(STRIPE_KEY)%", "%env(DOMAIN)%", "%env(STRIPE_END_POINT)%"]

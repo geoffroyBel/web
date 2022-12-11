@@ -107,17 +107,18 @@ export const signUp =
 			dispatch({ type: SIGN_UP, payload: data });
 			completion();
 		} catch (e) {
+			console.log(e.message);
 			dispatch({ type: IS_LOADING, payload: false });
 			dispatch({
 				type: ERROR_AUTH,
 				payload: errorFunc(e),
 			});
-			dispatch(
-				updateSyncErrors("user", {
-					username: " ",
-					password: " ",
-				})
-			);
+			// dispatch(
+			// 	updateSyncErrors("user", {
+			// 		username: " ",
+			// 		password: " ",
+			// 	})
+			// );
 		}
 	};
 export const signUpConfirm =

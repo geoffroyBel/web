@@ -31,7 +31,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ]
 )]
 #[ApiFilter(SearchPrestationFilter::class)]
-class Prestation
+class Prestation implements AuthoredEntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

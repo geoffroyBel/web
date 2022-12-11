@@ -145,6 +145,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(groups: ["put-confirmation-code"])]
     private ?int $retypedConfirmationCode = null;
 
+
+    #[ORM\OneToOne(inversedBy: 'owner', cascade: ['persist', 'remove'])]
+    private ?Company $company = null;
+
+
     public function __construct()
     {
         $this->prestations = new ArrayCollection();
@@ -372,4 +377,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): self
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+    
 }
