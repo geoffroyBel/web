@@ -27,20 +27,21 @@ const rawTheme = createTheme({
 	palette: {
 		text: {
 			light: "#FFFFFF",
-			main: "#28282a",
+			primary: "#28282a",
 			dark: "#1e1e1f",
-			gray: "#AEC6CC",
+			gray: "#565557",
+			success: "#64ffda",
 		},
 		primary: {
-			ultraLight: "#F2F4F4",
-			light: "#69696a",
-			main: "#28282a",
-			dark: "#1e1e1f",
+			ultraLight: "#E4F2FF",
+			light: "#2A9CFF",
+			main: "#1378EC",
+			dark: "#1378EC",
 		},
 		secondary: {
-			light: "#fff5f8",
-			main: "#ff3366",
-			dark: "#e62958",
+			light: "#e7b9ff",
+			main: "#b388ff",
+			dark: "#805acb",
 		},
 		warning: {
 			main: "#ffc071",
@@ -52,13 +53,21 @@ const rawTheme = createTheme({
 			dark: red[700],
 		},
 		success: {
-			light: green[50],
-			main: green[500],
-			dark: green[700],
+			light: "#09C570",
+			main: "#09C570",
+			dark: "#09C570",
+		},
+		background: {
+			light: "#FFFFFF",
+		},
+		gray: {
+			main: "rgba(12, 13, 52, 0.2)",
+			light: "rgba(12, 13, 52, 0.2)",
+			dark: "rgba(12, 13, 52, 0.2)",
 		},
 	},
 	typography: {
-		fontFamily: "'Work Sans', sans-serif",
+		// fontFamily: "'Work Sans', sans-serif",
 		fontSize: 14,
 		fontWeightLight: 300, // Work Sans
 		fontWeightRegular: 400, // Work Sans
@@ -82,9 +91,9 @@ const fontSection = {
 };
 const fontTitle = {
 	color: rawTheme.palette.text.primary,
-	fontWeight: rawTheme.typography.fontWeightLight,
+	fontWeight: rawTheme.typography.fontWeightRegular,
 	fontFamily: "'Roboto Condensed', sans-serif",
-	letterSpacing: 1,
+	//letterSpacing: 2,
 };
 
 const theme = {
@@ -103,8 +112,8 @@ const theme = {
 		h1: {
 			...rawTheme.typography.h1,
 			...fontHeader,
-			letterSpacing: 0,
-			fontSize: 60,
+			// letterSpacing: 0,
+			// fontSize: 60,
 		},
 		h2: {
 			...rawTheme.typography.h2,
@@ -114,8 +123,7 @@ const theme = {
 		h3: {
 			...rawTheme.typography.h3,
 			...fontTitle,
-			fontWeight: rawTheme.typography.fontWeightRegular,
-			fontSize: 38,
+			fontSize: 28,
 		},
 		h4: {
 			...rawTheme.typography.h4,
@@ -143,16 +151,17 @@ const theme = {
 		},
 		title: {
 			...fontTitle,
-			fontSize: 70,
+			fontSize: 28,
 			letterSpacing: 1,
-			fontWeight: rawTheme.typography.fontWeightBold,
-			textTransform: "uppercase",
+			fontWeight: rawTheme.typography.fontWeightRegular,
+			textTransform: "capitalize",
 		},
-		desc: {
+		description: {
 			...fontTitle,
 			fontSize: 20,
-			letterSpacing: 3,
-			fontWeight: rawTheme.typography.fontWeightRegular,
+			letterSpacing: 1,
+			fontWeight: rawTheme.typography.fontWeightLight,
+			color: rawTheme.palette.text.gray,
 		},
 		subtitle1: {
 			...rawTheme.typography.subtitle1,
@@ -169,15 +178,22 @@ const theme = {
 			fontSize: 18,
 			fontWeight: rawTheme.typography.fontWeightLight,
 		},
-		body1: {
+		button: {
+			// ...rawTheme.typography.body2,
+			fontWeight: rawTheme.typography.fontWeightBold,
+			fontSize: 16,
+			color: rawTheme.palette.text.gray,
+		},
+		body: {
 			...rawTheme.typography.body2,
 			fontWeight: rawTheme.typography.fontWeightRegular,
 			fontSize: 16,
+			color: rawTheme.palette.text.gray,
 		},
-		body2: {
-			...rawTheme.typography.body1,
+		body1: {
+			...rawTheme.typography.body2,
 			fontWeight: rawTheme.typography.fontWeightLight,
-			fontSize: 14,
+			fontSize: 16,
 		},
 		captionBold: {
 			...rawTheme.typography.body1,
@@ -186,6 +202,13 @@ const theme = {
 		},
 	},
 	components: {
+		MuiTypography: {
+			styleOverrides: {
+				button: {
+					textTransform: "Capitalize",
+				},
+			},
+		},
 		MuiLink: {
 			defaultProps: {
 				component: LinkBehavior,
@@ -194,6 +217,21 @@ const theme = {
 		MuiButtonBase: {
 			defaultProps: {
 				LinkComponent: LinkBehavior,
+			},
+		},
+		MuiButton: {
+			defaultProps: {
+				fullWidth: true,
+			},
+			styleOverrides: {
+				// Name of the slot
+				root: {
+					// Some CSS
+					borderRadius: "30px",
+					padding: rawTheme.spacing(1.5),
+					maxWidth: 300,
+					textTransform: "none",
+				},
 			},
 		},
 	},

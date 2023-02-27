@@ -80,8 +80,8 @@ class StripeService extends Stripe
         
         return AccountLink::create([
             'account' => $account->id,
-            'refresh_url' => "$this->domain/reauth",
-            'return_url' => "$this->domain/return",
+            'refresh_url' => "$this->domain/company/create/3?success=false",
+            'return_url' => "$this->domain/company/create/3?success=true",
             'type' => 'account_onboarding',
           ]);
     }

@@ -18,18 +18,26 @@ import Signup from "./Signup";
 import SignupConfirm from "./SignupConfirm";
 import AuthProvider from "./AuthProvider";
 import Profile from "../screens/Profile";
-const Home = () => <div>Dashboard</div>;
+import Landing from "../Authentication/landing/Landing";
+import Welcome from "../Authentication/Welcome";
+import Login from "../Authentication/Login";
+import { Register, Confirm } from "../Authentication/Register";
 
 const App = () => {
 	const location = useLocation();
+	/*element={<AuthProvider {...{ location }} />}*/
 	return (
-		<AnimatePresence exitBeforeEnter>
+		<AnimatePresence initial={false} exitBeforeEnter>
 			<Routes {...{ location }} key={location.pathname}>
-				<Route path='/' element={<AuthProvider {...{ location }} />}>
+				<Route path='/'>
+					<Route path='/home' element={<Landing />} />
+					<Route path='/welcome' element={<Welcome />} />
+					<Route path='/login' element={<Login />} />
+					<Route path='/register' element={<Register />} />
 					<Route path='signup' element={<Signup />} />
 					<Route path='signin' element={<Signin />} />
-					<Route path='signupConfirm' element={<SignupConfirm />} />
-					<Route path='home' element={<Profile />} />
+					<Route path='confirm' element={<Confirm />} />
+					<Route path='company/create/:page' element={<Profile />} />
 				</Route>
 			</Routes>
 		</AnimatePresence>

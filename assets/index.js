@@ -5,7 +5,7 @@ import store from "./src/store";
 import withRoot from "./withRoot";
 import App from "./src/components/App";
 import { BrowserRouter } from "react-router-dom";
-
+import("./styles/app.css");
 const Home = withRoot(() => (
 	<Provider store={store}>
 		<BrowserRouter>

@@ -149,6 +149,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(inversedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?Company $company = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', cascade:['remove'], targetEntity: Image::class)]
+    private Collection $images;
+
 
     public function __construct()
     {
@@ -156,6 +159,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = self::DEFAULT_ROLES;
         $this->enabled = false;
         $this->confirmationToken = null;
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -386,6 +390,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCompany(?Company $company): self
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getUser() === $this) {
+                $image->setUser(null);
+            }
+        }
 
         return $this;
     }

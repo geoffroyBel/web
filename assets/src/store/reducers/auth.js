@@ -7,6 +7,7 @@ const initialStates = {
 	id: null,
 	user: null,
 	loading: false,
+	isAuthenticated: false,
 };
 
 export default (state = initialStates, action) => {

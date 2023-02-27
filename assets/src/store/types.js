@@ -6,6 +6,7 @@ export const AWS_SIGN_UP = "AWS_SIGN_UP";
 export const AWS_SIGN_UP_CONFIRMATION = "AWS_SIGN_UP_CONFIRMATION";
 export const SIGN_UP = "SIGN_UP";
 export const SIGN_IN = "SIGN_IN";
+export const SIGN_IN_ERROR = "SIGN_IN_ERROR";
 export const FETCH_USER = "FETCH_USER";
 export const DELETE_PROFILE = "DELETE_PROFILE";
 export const ADD_TO_CART = "ADD_TO_CART";
