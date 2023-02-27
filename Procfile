@@ -1,2 +1,2 @@
 web: heroku-php-apache2 public/
-worker: php bin/console messenger:consume async
+worker1: php bin/console messenger:consume async
