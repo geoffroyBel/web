@@ -78,7 +78,6 @@
 		"auto-scripts": {
 			"cache:clear": "symfony-cmd",
 			"php bin/console doctrine:migrations:migrate": "symfony-cmd",
-			"php bin/console doctrine:migrations:migrate": "symfony-cmd",
 			"assets:install %PUBLIC_DIR%": "symfony-cmd",
 			"lexik:jwt:generate-keypair --overwrite": "symfony-cmd"
 		},
