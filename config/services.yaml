@@ -107,3 +107,11 @@ services:
         connection: "default"
   App\Services\StripeService:
     arguments: ["%env(STRIPE_KEY)%", "%env(DOMAIN)%", "%env(STRIPE_END_POINT)%"]
+  App\Services\AwsService:
+    arguments:
+      [
+        "%env(S3_KEY)%",
+        "%env(S3_SECRET)%",
+        "%env(S3_BUCKET)%",
+        "%env(S3_REGION)%",
+      ]
