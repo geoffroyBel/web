@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Stack } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
 export default () => {
 	const [company, setCompany] = useState(true);
+	const navigate = useNavigate();
 	return (
 		<Box
 			sx={{
@@ -21,6 +23,7 @@ export default () => {
 					alignItems='center'
 					spacing={2}>
 					<Button
+						onClick={() => navigate("/prestation/add")}
 						sx={{ padding: "1rem 2rem" }}
 						variant='outlined'>
 						Add Prestation
