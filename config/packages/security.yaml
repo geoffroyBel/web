@@ -30,9 +30,9 @@ security:
     api:
       pattern: ^/api
       stateless: true
-      jwt: ~
-      #   authenticator: app.token_authenticator
-      # user_checker: App\Security\UserEnabledChecker
+      jwt:
+        authenticator: app.token_authenticator
+        user_checker: App\Security\UserEnabledChecker
 
     main:
       lazy: true
