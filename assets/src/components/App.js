@@ -21,23 +21,88 @@ import Profile from "../screens/Profile";
 import Landing from "../Authentication/landing/Landing";
 import Welcome from "../Authentication/Welcome";
 import Login from "../Authentication/Login";
+import EditProfile from "../Profile/edit";
+import CompanyCreate from "../Profile/edit/CompanyCreate";
 import { Register, Confirm } from "../Authentication/Register";
+import { Sports } from "../Home/Sports/Sports";
+import Drawer from "../Home/Drawer";
 
 const App = () => {
 	const location = useLocation();
 	/*element={<AuthProvider {...{ location }} />}*/
 	return (
-		<AnimatePresence initial={false} exitBeforeEnter>
-			<Routes {...{ location }} key={location.pathname}>
+		<AnimatePresence
+			//initial={false}
+			exitBeforeEnter>
+			<Routes
+				{...{ location }}
+				key={location.pathname}>
 				<Route path='/'>
-					<Route path='/home' element={<Landing />} />
-					<Route path='/welcome' element={<Welcome />} />
-					<Route path='/login' element={<Login />} />
-					<Route path='/register' element={<Register />} />
-					<Route path='signup' element={<Signup />} />
-					<Route path='signin' element={<Signin />} />
-					<Route path='confirm' element={<Confirm />} />
-					<Route path='company/create/:page' element={<Profile />} />
+					{/* <Route
+						path='/home'
+						element={<Landing />}
+					/> */}
+					<Route
+						path='/home'
+						element={<Drawer navBarPos='relative' />}>
+						<Route
+							index
+							element={<Landing />}
+						/>
+						<Route
+							path='sports'
+							element={<Sports />}
+						/>
+					</Route>
+					<Route
+						path='/profile'
+						element={
+							<Drawer
+								navBarPos='absolute'
+								navBarColor='text.light'
+							/>
+						}>
+						<Route
+							path='edit'
+							element={<EditProfile />}
+						/>
+					</Route>
+					<Route
+						path='prestation/add'
+						element={<CompanyCreate />}
+					/>
+					{/* <Route
+						path='/home/sports'
+						element={<Sports />}
+					/> */}
+					<Route
+						path='/welcome'
+						element={<Welcome />}
+					/>
+					<Route
+						path='/login'
+						element={<Login />}
+					/>
+					<Route
+						path='/register'
+						element={<Register />}
+					/>
+					<Route
+						path='signup'
+						element={<Signup />}
+					/>
+					<Route
+						path='signin'
+						element={<Signin />}
+					/>
+					<Route
+						path='confirm'
+						element={<Confirm />}
+					/>
+					<Route
+						path='company/create/:page'
+						element={<Profile />}
+					/>
 				</Route>
 			</Routes>
 		</AnimatePresence>

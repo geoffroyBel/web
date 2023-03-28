@@ -8,7 +8,12 @@ const LinkBehavior = React.forwardRef((props, ref) => {
 	const { href, ...other } = props;
 	// Map href (MUI) -> to (react-router)
 	return (
-		<RouterLink data-testid='custom-link' ref={ref} to={href} {...other} />
+		<RouterLink
+			data-testid='custom-link'
+			ref={ref}
+			to={href}
+			{...other}
+		/>
 	);
 });
 
@@ -27,6 +32,7 @@ const rawTheme = createTheme({
 	palette: {
 		text: {
 			light: "#FFFFFF",
+			secondary: "#C7C8C7",
 			primary: "#28282a",
 			dark: "#1e1e1f",
 			gray: "#565557",
@@ -58,11 +64,13 @@ const rawTheme = createTheme({
 			dark: "#09C570",
 		},
 		background: {
+			main: "#FFFFFF",
 			light: "#FFFFFF",
+			dark: "#FFFFFF",
 		},
 		gray: {
 			main: "rgba(12, 13, 52, 0.2)",
-			light: "rgba(12, 13, 52, 0.2)",
+			light: "#E4E5E4",
 			dark: "rgba(12, 13, 52, 0.2)",
 		},
 	},
@@ -73,6 +81,11 @@ const rawTheme = createTheme({
 		fontWeightRegular: 400, // Work Sans
 		fontWeightMedium: 600, // Roboto Condensed
 		fontWeightBold: 800,
+	},
+	borderRadius: {
+		xl: 70,
+		lg: 50,
+		md: 30,
 	},
 });
 
@@ -144,17 +157,24 @@ const theme = {
 		},
 		h7: {
 			...rawTheme.typography.h2,
-			...fontHeader,
-			fontSize: 30,
-			fontWeight: rawTheme.typography.fontWeightLight,
+			...fontTitle,
+			textTransform: "capitalize",
+			fontSize: 12,
+			fontWeight: rawTheme.typography.fontWeightMedium,
 			letterSpacing: 1,
 		},
 		title: {
 			...fontTitle,
-			fontSize: 28,
-			letterSpacing: 1,
-			fontWeight: rawTheme.typography.fontWeightRegular,
+			fontSize: 20,
+			fontWeight: rawTheme.typography.fontWeightBold,
 			textTransform: "capitalize",
+		},
+		subtitle: {
+			...fontTitle,
+			fontSize: 16,
+			fontWeight: rawTheme.typography.fontWeightMedium,
+			textTransform: "capitalize",
+			letterSpacing: 1,
 		},
 		description: {
 			...fontTitle,
@@ -163,9 +183,21 @@ const theme = {
 			fontWeight: rawTheme.typography.fontWeightLight,
 			color: rawTheme.palette.text.gray,
 		},
+		subtitle: {
+			...fontTitle,
+			fontSize: 16,
+			fontWeight: rawTheme.typography.fontWeightMedium,
+			textTransform: "capitalize",
+			letterSpacing: 1,
+		},
 		subtitle1: {
-			...rawTheme.typography.subtitle1,
-			fontSize: 18,
+			// ...rawTheme.typography.subtitle1,
+			// fontWeight: rawTheme.typography.fontWeightMedium,
+			...fontTitle,
+			fontSize: 16,
+			fontWeight: rawTheme.typography.fontWeightRegular,
+			textTransform: "capitalize",
+			letterSpacing: 1,
 		},
 		subtitle2: {
 			...rawTheme.typography.subtitle1,
