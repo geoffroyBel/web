@@ -29,6 +29,7 @@ export default () => {
 						Add Prestation
 					</Button>
 					<Button
+						onClick={() => navigate("/company/create/1")}
 						sx={{ padding: "1rem 2rem" }}
 						variant='outlined'>
 						Stripe Account
