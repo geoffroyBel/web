@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 
 
 use ApiPlatform\Core\EventListener\EventPriorities;
+use App\Entity\Cart;
 use App\Entity\User;
 use App\Mailer\Mailer;
 use App\Security\ConfirmationCodeGenerator;
@@ -71,6 +72,8 @@ class UserRegisterSubscriber implements EventSubscriberInterface
         $entity->setPassword($this->passwordHasher->hashPassword($entity, $entity->getPassword()));
         $entity->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
         $entity->setConfirmationCode($this->confirmationCodeGenerator->getRandomConfirmationCode());
+        $cart = new Cart();
+        $entity->setCart($cart);
         $this->mailer->sendConfirmationUser($entity);
     }
 }
