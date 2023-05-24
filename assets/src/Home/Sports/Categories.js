@@ -56,7 +56,7 @@ const StyledTab = styled((props) => (
 	},
 }));
 
-export default function Categories({ iconSize = 70 }) {
+export default function Categories({ iconSize = 50 }) {
 	const { width } = useWindowDimensions();
 	const [value, setValue] = React.useState(0);
 	const isOverlap = width < categories.length * (iconSize + 20);
@@ -80,8 +80,8 @@ export default function Categories({ iconSize = 70 }) {
 						icon={
 							<Box
 								sx={{
-									width: 70,
-									height: 70,
+									width: 50,
+									height: 50,
 
 									backgroundColor: category.color,
 									borderRadius: "50%",

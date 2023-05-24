@@ -57,7 +57,6 @@ export default ({ children, initialStep = 0, ...props }) => {
 			{...props}
 			onSubmit={async (values, helpers) => {
 				if (step !== childrens.length - 1 && childrens.length > 1) {
-					childrens[step].props.onSubmit(values);
 					setStep(step + 1);
 				} else {
 					childrens[step].props.onSubmit(values);
@@ -66,7 +65,9 @@ export default ({ children, initialStep = 0, ...props }) => {
 			{({ errors, values }) => {
 				return (
 					<MyForm autoComplete='off'>
-						<AnimatePresence initial={false} exitBeforeEnter>
+						<AnimatePresence
+							initial={false}
+							exitBeforeEnter>
 							{childrens.map((formStep, index) => {
 								const { title = null, description = null } = formStep.props;
 								return (

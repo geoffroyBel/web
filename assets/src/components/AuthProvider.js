@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
+import * as authActions from "../store/actions/auth";
 const excludeRoutes = ["/signin", "/signup", "/signupConfirm"];
 
-export default function AuthProvider({ location }) {
+const AuthProvider = ({ location, tryLocalSignin }) => {
 	const navigate = useNavigate();
 	const { pathname } = location;
 	const { token, user } = useSelector(({ auth }) => auth);
@@ -11,12 +12,13 @@ export default function AuthProvider({ location }) {
 		//si il y a token laisser la navigation se faire
 		//car tt requette avec rtr token expired or not found
 		// will send back to login
-
 		if (!token && !excludeRoutes.includes(pathname)) {
-			navigate("/signin");
+			tryLocalSignin(() => navigate("/signin"));
 		} else if (pathname === "/signupConfirm" && !user) {
 			navigate("/signup");
 		}
 	}, [pathname, token]);
+
 	return <Outlet />;
-}
+};
+export default connect(null, authActions)(AuthProvider);

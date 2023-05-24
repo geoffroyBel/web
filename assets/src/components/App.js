@@ -25,6 +25,7 @@ import EditProfile from "../Profile/edit";
 import CompanyCreate from "../Profile/edit/CompanyCreate";
 import { Register, Confirm } from "../Authentication/Register";
 import { Sports } from "../Home/Sports/Sports";
+import FavoriteSports from "../Home/FavoritesSports";
 import Drawer from "../Home/Drawer";
 
 const App = () => {
@@ -52,6 +53,10 @@ const App = () => {
 						<Route
 							path='sports'
 							element={<Sports />}
+						/>
+						<Route
+							path='favorites'
+							element={<FavoriteSports />}
 						/>
 					</Route>
 					<Route

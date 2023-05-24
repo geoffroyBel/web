@@ -39,6 +39,19 @@ const items = [
 		),
 	},
 	{
+		label: "Favorites",
+		screen: "Favorites",
+		color: "primary.main",
+		link: "/home/favorites",
+		icon: () => (
+			<InboxIcon
+				p={0}
+				m={0}
+				color='background'
+			/>
+		),
+	},
+	{
 		label: "Edit Profile",
 		screen: "profile",
 		color: "primary.main",

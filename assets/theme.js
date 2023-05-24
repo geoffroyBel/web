@@ -60,7 +60,7 @@ const rawTheme = createTheme({
 		},
 		success: {
 			light: "#09C570",
-			main: "#09C570",
+			main: "#54d6b7",
 			dark: "#09C570",
 		},
 		background: {

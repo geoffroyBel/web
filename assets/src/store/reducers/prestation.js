@@ -1,4 +1,4 @@
-//import Prestation from "../../models/prestation";
+import { Prestation } from "../../models/Prestation";
 import {
 	FETCH_PRESTATIONS,
 	POST_PRESTATION,
@@ -7,12 +7,13 @@ import {
 } from "../types";
 
 const initialstates = {
-	availablePrestations: {},
+	availablePrestations: [],
 	userPrestations: [],
 	initialValues: {},
 	error: null,
 	loading: false,
 	currentPrestation: null,
+	pageLoaded: {},
 };
 
 export default (state = initialstates, action) => {
@@ -26,9 +27,18 @@ export default (state = initialstates, action) => {
 				},
 			};
 		case FETCH_PRESTATIONS:
+			const { data: rows, page } = action.payload;
+			let availablePrestations = [];
+			if (!state.pageLoaded[page]) {
+				availablePrestations = [
+					...state.availablePrestations,
+					...rows.map((data) => new Prestation(data)),
+				];
+			}
 			return {
 				...state,
-				availablePrestations: action.payload,
+				pageLoaded: { ...state.pageLoaded, [page]: true },
+				availablePrestations,
 			};
 		case CREATE_PRESTATION:
 			return {
