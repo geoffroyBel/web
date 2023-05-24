@@ -20,6 +20,8 @@ services:
       - "../src/Entity/"
       - "../src/Kernel.php"
 
+  App\DataFixtures\Providers\HashPasswordProvider:
+    tags: [{ name: nelmio_alice.faker.provider }]
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
   App\Serializer\UserContextBuilder:
@@ -30,6 +32,9 @@ services:
     class: App\Security\TokenAuthenticator
     parent: lexik_jwt_authentication.security.jwt_authenticator
 
+  App\EventListener\ExceptionListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception }
   App\EventListener\AuthenticationSuccessListener:
     tags:
       - {
@@ -91,7 +96,7 @@ services:
   JoliCode\Elastically\Messenger\IndexationRequestHandler: ~
   JoliCode\Elastically\Messenger\DocumentExchangerInterface:
     alias: App\Elasticsearch\DocumentExchanger
-  App\Filter\SearchPrestationFilter:
+  App\Filter\SearchElasticPrestationFilter:
     # The "arguments" key can be omitted if the autowiring is enabled
     arguments:
       $client: '@JoliCode\Elastically\Client'
