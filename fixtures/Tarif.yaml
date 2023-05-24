@@ -1,0 +1,21 @@
+App\Entity\Tarif:
+  tarif_{1..30}:
+    type: "<randomTarif()>"
+    credits: 1000
+    price: 200
+    prestation: "@prestation_*"
+  # tarif_2:
+  #   type: "mensuel"
+  #   credits: 1000
+  #   price: 200
+  #   prestation: "@prestation_1"
+  # tarif_3:
+  #   type: "forfait"
+  #   credits: 1
+  #   price: 200
+  #   prestation: "@prestation_1"
+  # tarif_4:
+  #   type: "annuel"
+  #   credits: 3
+  #   price: 200
+  #   prestation: "@prestation_1"

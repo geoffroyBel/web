@@ -1,0 +1,6 @@
+# api/fixtures/manufacturer.yaml
+App\Entity\Image:
+  image_{1..40}:
+    url: "https://picsum.photos/200"
+    owner: "@user_*"
+    prestation: "@prestation_*"

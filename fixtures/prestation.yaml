@@ -1,0 +1,11 @@
+# api/fixtures/manufacturer.yaml
+App\Entity\Prestation:
+  prestation_{1..10}:
+    name: "<company()>"
+    description: "<text()>"
+    company: "@company_1"
+    published: "<date_create()>"
+    categories: ["@category_<numberBetween(2,3)>"]
+    # description: <text()>
+    # countryCode: <countryCode()>
+    # listedDate: <dateTime()>

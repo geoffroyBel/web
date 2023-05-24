@@ -1,0 +1,12 @@
+# api/fixtures/manufacturer.yaml
+App\Entity\Abonnement:
+  abonnement_1:
+    user: "@user_3"
+    prestation: "@prestation_*"
+    tarif: "@tarif_*"
+    paymentStatus: "pending"
+    checkoutSessionId: "cs_test_a1gmZf79fE5LzZQaMxw45u0XTCesnXS5vokXO5K3oKVHvUOF7pVty96MW2"
+
+    # description: <text()>
+    # countryCode: <countryCode()>
+    # listedDate: <dateTime()>

@@ -1,0 +1,11 @@
+# api/fixtures/manufacturer.yaml
+App\Entity\Company:
+  company_1:
+    name: <company()>
+    accountId: "345"
+    accountLink: "hfhfhfhhf"
+    status: "pending"
+    owner: "@user_1"
+    # description: <text()>
+    # countryCode: <countryCode()>
+    # listedDate: <dateTime()>

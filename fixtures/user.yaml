@@ -1,0 +1,24 @@
+# App\Entity\User:
+#   user_{1..10}:
+App\Entity\User:
+  user_1:
+    username: "company"
+    email: "<email()>"
+    password: <hashPassword('Secret123#')>
+    enabled: true
+    cart: "@cart_*"
+    roles: ["ROLE_COMPANY"]
+  user_2:
+    username: "admin"
+    email: "<email()>"
+    password: <hashPassword('Secret123#')>
+    enabled: true
+    cart: "@cart_*"
+    roles: ["ROLE_ADMIN"]
+  user_3:
+    username: "user"
+    email: "<email()>"
+    password: <hashPassword('Secret123#')>
+    enabled: true
+    cart: "@cart_*"
+    roles: ["ROLE_USER"]

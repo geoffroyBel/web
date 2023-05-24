@@ -1,0 +1,13 @@
+# api/fixtures/manufacturer.yaml
+App\Entity\Category:
+  category_1:
+    title: "sport"
+  category_2:
+    title: "skateboard"
+    parent: "@category_1"
+  category_3:
+    title: "surf"
+    parent: "@category_1"
+  category_4:
+    title: "motocross"
+    parent: "@category_1"
