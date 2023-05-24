@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\StripeAccountAction;
 use App\Controller\StripeHookAction;
 use App\Repository\CompanyRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ProxyManager\Autoloader\AutoloaderInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -50,7 +52,7 @@ class Company implements AuthoredEntityInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["post"])]
+    #[Groups(["post", "list_prestation"])]
     private ?string $name = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -62,11 +64,21 @@ class Company implements AuthoredEntityInterface
     #[Groups(["get-stripe-account"])]
     private ?string $accountLink = null;
 
-    #[ORM\OneToOne(mappedBy: 'company', cascade: ['persist', 'remove'])]
-    private ?User $owner = null;
+    #[ORM\OneToOne(inversedBy: 'company', cascade: ['persist', 'remove'])]
+    private ?User $owner= null;
+    // #[ORM\OneToOne(mappedBy: 'company', cascade: ['persist', 'remove'])]
+    // private ?User $owner = null;
 
     #[ORM\Column(length: 50, nullable: true, options: ["default" => "pending"])]
     private ?string $status = null;
+
+    #[ORM\OneToMany(mappedBy: "company", targetEntity: Prestation::class)]
+    private Collection $prestations;
+
+    public function __construct()
+    {
+        $this->prestations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -114,14 +126,14 @@ class Company implements AuthoredEntityInterface
     public function setOwner(?User $owner): self
     {
         // unset the owning side of the relation if necessary
-        if ($owner === null && $this->owner !== null) {
-            $this->owner->setCompany(null);
-        }
+        // if ($owner === null && $this->owner !== null) {
+        //     $this->owner->setCompany(null);
+        // }
 
-        // set the owning side of the relation if necessary
-        if ($owner !== null && $owner->getCompany() !== $this) {
-            $owner->setCompany($this);
-        }
+        // // set the owning side of the relation if necessary
+        // if ($owner !== null && $owner->getCompany() !== $this) {
+        //     $owner->setCompany($this);
+        // }
 
         $this->owner = $owner;
 
@@ -139,4 +151,12 @@ class Company implements AuthoredEntityInterface
 
         return $this;
     }
+    /**
+     * @return Collection<int, Prestation>
+     */
+    public function getPrestations(): Collection
+    {
+        return $this->prestations;
+    }
+
 }

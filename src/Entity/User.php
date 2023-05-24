@@ -146,11 +146,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $retypedConfirmationCode = null;
 
 
-    #[ORM\OneToOne(inversedBy: 'owner', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'], targetEntity: Company::class)]
     private ?Company $company = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', cascade:['remove'], targetEntity: Image::class)]
-    private Collection $images;
+    // #[ORM\OneToMany(mappedBy: 'user', cascade:['remove'], targetEntity: Image::class)]
+    // private Collection $images;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Abonnement::class)]
+    private Collection $abonnements;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Reservation::class)]
+    private Collection $reservations;
+
+    #[Groups(["get-owner"])]
+    #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    private ?Cart $cart = null;
 
 
     public function __construct()
@@ -159,7 +169,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = self::DEFAULT_ROLES;
         $this->enabled = false;
         $this->confirmationToken = null;
-        $this->images = new ArrayCollection();
+        // $this->images = new ArrayCollection();
+        $this->abonnements = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -387,39 +399,131 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->company;
     }
 
+    // public function setCompany(?Company $company): self
+    // {
+    //     $this->company = $company;
+
+    //     return $this;
+    // }
     public function setCompany(?Company $company): self
     {
-        $this->company = $company;
+        //unset the owning side of the relation if necessary
+        if ($company === null && $this->company !== null) {
+            $this->company->setOwner(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($company !== null && $company->getOwner() !== $this) {
+            $company->setOwner($this);
+        }
+
+        // $this->owner = $owner;
+
+        return $this;
+    }
+    // /**
+    //  * @return Collection<int, Image>
+    //  */
+    // public function getImages(): Collection
+    // {
+    //     return $this->images;
+    // }
+
+    // public function addImage(Image $image): self
+    // {
+    //     if (!$this->images->contains($image)) {
+    //         $this->images->add($image);
+    //         $image->setOwner($this);
+    //     }
+
+    //     return $this;
+    // }
+
+    // public function removeImage(Image $image): self
+    // {
+    //     if ($this->images->removeElement($image)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($image->getOwner() === $this) {
+    //             $image->setOwner(null);
+    //         }
+    //     }
+
+    //     return $this;
+    // }
+
+    /**
+     * @return Collection<int, Abonnement>
+     */
+    public function getAbonnements(): Collection
+    {
+        return $this->abonnements;
+    }
+
+    public function addAbonnement(Abonnement $abonnement): self
+    {
+        if (!$this->abonnements->contains($abonnement)) {
+            $this->abonnements->add($abonnement);
+            $abonnement->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAbonnement(Abonnement $abonnement): self
+    {
+        if ($this->abonnements->removeElement($abonnement)) {
+            // set the owning side to null (unless already changed)
+            if ($abonnement->getUser() === $this) {
+                $abonnement->setUser(null);
+            }
+        }
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Image>
+     * @return Collection<int, Reservation>
      */
-    public function getImages(): Collection
+    public function getReservations(): Collection
     {
-        return $this->images;
+        return $this->reservations;
     }
 
-    public function addImage(Image $image): self
+    public function addReservation(Reservation $reservation): self
     {
-        if (!$this->images->contains($image)) {
-            $this->images->add($image);
-            $image->setUser($this);
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeImage(Image $image): self
+    public function removeReservation(Reservation $reservation): self
     {
-        if ($this->images->removeElement($image)) {
+        if ($this->reservations->removeElement($reservation)) {
             // set the owning side to null (unless already changed)
-            if ($image->getUser() === $this) {
-                $image->setUser(null);
+            if ($reservation->getUser() === $this) {
+                $reservation->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCart(): ?Cart
+    {
+        return $this->cart;
+    }
+
+    public function setCart(Cart $cart): self
+    {
+        // set the owning side of the relation if necessary
+        if ($cart->getOwner() !== $this) {
+            $cart->setOwner($this);
+        }
+
+        $this->cart = $cart;
 
         return $this;
     }
