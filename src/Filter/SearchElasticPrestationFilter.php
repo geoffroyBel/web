@@ -18,43 +18,48 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
 use ApiPlatform\Core\Exception\InvalidArgumentException;
 
-final class SearchPrestationFilter extends AbstractContextAwareFilter
+final class SearchElasticPrestationFilter extends AbstractContextAwareFilter
 {
+    private Client $client;
 
 
-
-    public function __construct( ManagerRegistry $managerRegistry, ?RequestStack $requestStack = null, LoggerInterface $logger = null, array $properties = null, NameConverterInterface $nameConverter = null, string $searchParameterName = 'simplesearch')
+    public function __construct(Client $client, ManagerRegistry $managerRegistry, ?RequestStack $requestStack = null, LoggerInterface $logger = null, array $properties = null, NameConverterInterface $nameConverter = null, string $searchParameterName = 'simplesearch')
     {
         parent::__construct($managerRegistry, $requestStack, $logger, $properties, $nameConverter);
 
-       
+        $this->client = $client;
     }
     protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
     {
         // otherwise filter is applied to order and page as well
-  
-        if (
-            'categories' !== $property && ( 
-            !$this->isPropertyEnabled($property, $resourceClass) ||
-            !$this->isPropertyMapped($property, $resourceClass) )
-        ) {
-            return;
-        }
+     
 
          $parameterName = $queryNameGenerator->generateParameterName($property); // Generate a unique parameter name to avoid collisions with other filters
-
-        if($property == "categories") {
-            $queryBuilder
-            ->leftJoin('o.categories', 'c')
-            ->addSelect('c')
-            ->andWhere(sprintf('c.%s LIKE :%s', 'title', $parameterName, $property))
-            ->setParameter($parameterName, $value.'%');;
-        } else {
-            $queryBuilder
-            ->andWhere(sprintf('o.%s = :%s', $property, $parameterName, $property))
-            ->setParameter($parameterName, $value);;
+         $searchQuery = new MultiMatch();
+         $searchQuery->setFields([
+            'name^3',
+            'name.autocomplete'
+         ]); 
+         $searchQuery->setQuery($value);
+         $searchQuery->setType(MultiMatch::TYPE_MOST_FIELDS);
+         $foundPosts = $this->client->getIndex('prestation')->search($searchQuery);
+      
+         $results = [];
+         $ids = [];
+         foreach ($foundPosts->getResults() as $result) { 
+             $ids[] = $result->getDocument()->getId();  
+         }
+         if (empty($ids)) {
+            $queryBuilder->andWhere('1 = 0'); // enforce empty result
+            return;
         }
-
+        $rootAlias = $queryBuilder->getRootAliases()[0];
+        $queryBuilder->andWhere("$rootAlias.id IN (:fulltext_search_filter_ids)");
+        $queryBuilder->setParameter('fulltext_search_filter_ids', $ids);
+        
+         // $queryBuilder
+        //     ->andWhere(sprintf('REGEXP(o.%s, :%s) = 1', $property, $parameterName))
+        //     ->setParameter($parameterName, $value);
     }
 
     // This function is only used to hook in documentation generators (supported by Swagger and Hydra)
@@ -65,13 +70,13 @@ final class SearchPrestationFilter extends AbstractContextAwareFilter
         }
 
         return [
-            'name' => [
-                'property' => 'name',
+            'q' => [
+                'property' => 'q',
                 'type' => 'string',
                 'required' => false,
             ],
-            'categories' => [
-                'property' => 'categories',
+            'order[relevance]' => [
+                'property' => 'order[relevance]',
                 'type' => 'string',
                 'required' => false,
             ],
