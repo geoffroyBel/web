@@ -5,6 +5,8 @@ namespace App\Services;
 
 
 use App\Entity\Company;
+use App\Entity\Prestation;
+use App\Entity\Tarif;
 use App\Entity\User;
 use PhpParser\Node\Expr\Cast\String_;
 use Stripe\Checkout\Session;
@@ -124,7 +126,47 @@ class StripeService extends Stripe
         throw new \Exception($this->error);
     }
 
+    public function createSession(Prestation $prestation, Tarif $tarif, $quantity)
+    {
+        try {
 
+                return Session::create([
+                    'success_url' => 'https://example.com/success',
+                    'cancel_url' => 'https://example.com/cancel',
+                    'payment_method_types' => ['card'],
+                    'line_items' => [[
+                        'name' => $prestation->getName(),
+                        'description' => 'Comfortable cotton t-shirt',
+                        'amount' => $tarif->getPrice() * 100,
+                        'currency' => 'usd',
+                        'quantity' => $quantity,
+                    ]],
+                    // 'payment_intent_data' => [
+                    //     'application_fee_amount' => 123,
+                    //     'transfer_data' => ['destination' => '{{CONNECTED_ACCOUNT_ID}}'],
+                    //   ],
+                    // 'success_url' => 'https://example.com/success',
+                    // 'cancel_url' => 'https://example.com/cancel',
+                ]);
+
+        } catch (RateLimitException $e) {
+            $this->error = "Too many requests made to the API too quickly";
+        } catch (InvalidRequestException $e) {
+          
+            $this->error = "Invalid parameters were supplied to Stripe's API";
+
+        } catch (AuthenticationException $e) {
+            $this->error = "Authentication with Stripe's API failed check keys";
+        } catch (ApiConnectionException $e) {
+            $this->error = "Network communication with Stripe failed";
+        } catch (ApiErrorException $e) {
+            $this->error = "check stripe account";
+        }catch (\Exception $e) {
+            $this->error = "Something else happened, completely unrelated to Stripe";
+        }
+       // var_dump($this->error);
+       throw new \Exception($this->error);
+    }
 
 
 
