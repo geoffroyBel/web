@@ -93,11 +93,12 @@ export const Sports = () => {
 				const current = _data.pop();
 				current.index += slides.length;
 				current.item = prestations[current.index];
+				console.log([current, ..._data]);
 				console.log("next -----", current.index);
-
 				setCurrentIndex((prev) => prev + step);
 				setSlides([current, ..._data]);
 			}
+			console.log("c quoi le delire");
 			// setSlides([current, ..._data]);
 			// setCurrentIndex((prev) => prev + step);
 		},

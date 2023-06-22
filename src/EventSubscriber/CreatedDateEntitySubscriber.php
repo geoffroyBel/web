@@ -30,5 +30,6 @@ class CreatedDateEntitySubscriber implements EventSubscriberInterface
         }
 
         $entity->setCreated(new \DateTime());
+        $entity->setPublished(new \DateTime());
     }
 }

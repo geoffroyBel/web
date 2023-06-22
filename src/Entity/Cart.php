@@ -9,38 +9,32 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\AddCartItemsAction;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CartRepository::class)]
 #[ApiResource(
-    // collectionOperations:[
-    //     'add_cart_items' => [
-    //         // 'security' => "is_granted('IS_AUTHENTICATED_FULLY') and object.getOwner() == user",
-    //         'method' => 'post',
-    //         'path'=>'/carts/addItems',
-    //         'controller' => AddCartItemsAction::class,
-    //         // 'denormalization_context'=>['groups'=>'put-stripe-account'],
-    //         // 'normalization_context'=>['groups'=>'get-stripe-account'],
-    //         // 'validation_groups'=>['Default', 'put-stripe-account']
-    //     ],
-    // ],
+    collectionOperations:[
+        'add_cart_items' => [
+            // 'security' => "is_granted('IS_AUTHENTICATED_FULLY') and object.getOwner() == user",
+            'method' => 'post',
+            'path'=>'/carts/addItems',
+            'controller' => AddCartItemsAction::class,
+            // 'denormalization_context'=>['groups'=>'put-stripe-account'],
+            // 'normalization_context'=>['groups'=>'get-stripe-account'],
+            // 'validation_groups'=>['Default', 'put-stripe-account']
+        ],
+    ],
 itemOperations: [
     'get',
-    'add_cart_items' => [
-         'method' => 'put',
-         'path'=>'/cart/{id}/add',
-         'controller' => AddCartItemsAction::class,
-        //  'denormalization_context'=>['groups'=>'put-stripe-account'],
-        //  'normalization_context'=>['groups'=>'get-stripe-account'],
-        //  'validation_groups'=>['Default', 'put-stripe-account']
-     ],
-
 ]
 )]
 class Cart
 {
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["get_owner", "get_user"])]
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'cart', cascade: ['persist', 'remove'])]
@@ -48,7 +42,9 @@ class Cart
     private ?User $owner = null;
 
 
-    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartItem::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'cart',cascade: ['persist', 'remove'], targetEntity: CartItem::class, orphanRemoval: true)]
+    
+    #[Groups(["get_owner",  "get_user"])]
     #[ApiSubresource]
     private Collection $cartItems;
 

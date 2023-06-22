@@ -54,7 +54,7 @@ const rawTheme = createTheme({
 			dark: "#ffb25e",
 		},
 		error: {
-			light: red[50],
+			light: red[200],
 			main: red[500],
 			dark: red[700],
 		},
@@ -167,7 +167,7 @@ const theme = {
 			...fontTitle,
 			fontSize: 20,
 			fontWeight: rawTheme.typography.fontWeightBold,
-			textTransform: "capitalize",
+			//textTransform: "capitalize",
 		},
 		subtitle: {
 			...fontTitle,
@@ -261,7 +261,7 @@ const theme = {
 					// Some CSS
 					borderRadius: "30px",
 					padding: rawTheme.spacing(1.5),
-					maxWidth: 300,
+					// maxWidth: 300,
 					textTransform: "none",
 				},
 			},

@@ -25,12 +25,7 @@ export default (state = initialStates, action) => {
 				...state,
 				error: null,
 				loading: false,
-				user: new User(
-					action.payload.id,
-					action.payload.username,
-					action.payload.email,
-					null
-				),
+				user: new User(action.payload),
 			};
 		// case SIGN_UP:
 		// 	return {

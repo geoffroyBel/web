@@ -64,7 +64,13 @@ Encore
 	//.enableTypeScriptLoader()
 
 	// uncomment if you use React
-	.enableReactPreset();
+	.enableReactPreset()
+	.addRule({
+		test: /\.m?js/,
+		resolve: {
+			fullySpecified: false,
+		},
+	});
 
 // uncomment to get integrity="..." attributes on your script & link tags
 // requires WebpackEncoreBundle 1.4 or higher
@@ -73,4 +79,8 @@ Encore
 // uncomment if you're having problems with a jQuery plugin
 //.autoProvidejQuery()
 
-module.exports = Encore.getWebpackConfig();
+// module.exports = Encore.getWebpackConfig();
+const config = Encore.getWebpackConfig();
+config.resolve.extensions.unshift(".mjs");
+//config.resolve.extensions.unshift(".esm.js");
+module.exports = config;

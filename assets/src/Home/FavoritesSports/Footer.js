@@ -16,6 +16,7 @@ const Footer = styled(Box)(({ theme }) => ({
 export default ({
 	label = "not provided",
 	onPress = () => console.log("onPress masonry"),
+	onDelete = () => console.log("delete fav"),
 }) => {
 	const theme = useTheme();
 	return (
@@ -30,12 +31,29 @@ export default ({
 					// right: 0,
 					position: "relative",
 					display: "flex",
-					justifyContent: "center",
+					justifyContent: "space-around",
 					alignItems: "center",
 					borderTopLeftRadius: 50,
 					borderBottomLeftRadius: 50,
 					backgroundColor: "primary.light",
 				}}>
+				<Button
+					fullWidth
+					onClick={onDelete}
+					sx={{
+						maxWidth: 250,
+
+						borderRadius: 20,
+						marginTop: 3,
+						marginBottom: 3,
+						textTransform: "none",
+						color: "white",
+					}}
+					type='submit'
+					color='warning'
+					variant='outlined'>
+					Remove All
+				</Button>
 				<Button
 					fullWidth
 					onClick={onPress}
@@ -53,6 +71,7 @@ export default ({
 					variant='contained'>
 					{label}
 				</Button>
+
 				<Rounded
 					d='M 50 0
                     A 45 45, 0, 0, 1, 0 50

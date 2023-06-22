@@ -1,5 +1,5 @@
 import api from "../../api/heroku";
-import { ERROR, FETCH_PRESTATIONS } from "../types";
+import { ERROR, ERROR_CREATE_PRESTATION, FETCH_PRESTATIONS } from "../types";
 
 export const fetchPrestations = (page) => async (dispatch) => {
 	try {
@@ -15,4 +15,7 @@ export const fetchPrestations = (page) => async (dispatch) => {
 		console.log(error);
 		dispatch({ type: ERROR, payload: error.response });
 	}
+};
+export const sendErrors = (states) => async (dispatch) => {
+	dispatch({ type: ERROR_CREATE_PRESTATION, payload: states });
 };

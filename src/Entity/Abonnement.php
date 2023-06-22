@@ -13,7 +13,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: [
         "post" => [
-            "security" => "is_granted('IS_AUTHENTICATED_FULLY')"
+            "security" => "is_granted('IS_AUTHENTICATED_FULLY')",
+            "normalization_context" => ["groups" => ["post_abonnement"]],
         ],
         "get" => [
             "normalization_context" => ["groups" => ["get_abonnement"]],
@@ -57,6 +58,9 @@ class Abonnement
     #[ORM\JoinColumn( nullable: true,onDelete: "CASCADE")]
     #[Groups(["post", "get_abonnement"])]
     private ?Tarif $tarif = null;
+
+    #[Groups(['post_abonnement'])]
+    private ?string $checkoutUrl = null;
 
 
     public function getId(): ?int
@@ -142,5 +146,16 @@ class Abonnement
         $this->prestation = $prestation;
 
         return $this;
+    }
+
+    public function setCheckoutUrl(?string $url): self
+    {
+        $this->checkoutUrl = $url;
+        return $this;
+    }
+
+    public function getCheckoutUrl(): ?string
+    {
+        return $this->checkoutUrl;
     }
 }

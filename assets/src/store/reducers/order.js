@@ -1,4 +1,4 @@
-import { CREATE_PAYMENT_INTENT } from "../types";
+import { CREATE_PAYMENT_CHECKOUT, CREATE_PAYMENT_INTENT } from "../types";
 
 const initialStates = {
 	error: null,
@@ -6,6 +6,7 @@ const initialStates = {
 	client_secret: null,
 	loading: false,
 	orders: [],
+	checkoutUrl: null,
 };
 
 export default (state = initialStates, action) => {
@@ -15,6 +16,11 @@ export default (state = initialStates, action) => {
 				paymentMethodId: action.payload.paymentId,
 				clientSecret: action.payload.clientSecret,
 				orders: [...state.orders, action.payload.order],
+			};
+		case CREATE_PAYMENT_CHECKOUT:
+			return {
+				...state,
+				checkoutUrl: action.payload.checkoutUrl,
 			};
 		default:
 			return state;

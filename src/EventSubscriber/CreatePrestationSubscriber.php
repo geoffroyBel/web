@@ -9,6 +9,7 @@ use App\Entity\AuthoredEntityInterface;
 use App\Entity\Prestation;
 use App\Entity\User;
 use App\Interface\CompanyInterface;
+use App\Services\StripeService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -25,7 +26,7 @@ class CreatePrestationSubscriber implements EventSubscriberInterface
     /**
      * AuthoredEntitySubscriber constructor.
      */
-    public function __construct(TokenStorageInterface $tokenStorage)
+    public function __construct(TokenStorageInterface $tokenStorage, private StripeService $stripe)
     {
         $this->tokenStorage = $tokenStorage;
     }
@@ -50,8 +51,9 @@ class CreatePrestationSubscriber implements EventSubscriberInterface
         /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
         $entity->setCompany($user->getCompany());
-        
-
-        // $entity->setOwner($user);
+       
+        /** @var Prestation $entity */
+        $product = $this->stripe->createProduct($entity->getName(), $user->getCompany()->getAccountID());
+        $entity->setProductID($product->id);
     }
 }

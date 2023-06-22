@@ -19,6 +19,9 @@ import Typography from "@mui/material/Typography";
 import { useTheme } from "@emotion/react";
 import Sport from "./Sport";
 const α = Math.PI / 12;
+const HEIGHT_POURCENT_WINDOW = 0.55;
+const RATIO_FROM_HEIGHT = 350 / 385;
+
 const CardCustom = styled(motion.div)(({ theme, ...rest }) => ({
 	position: "absolute",
 	display: "flex",
@@ -33,6 +36,9 @@ const CardCustom = styled(motion.div)(({ theme, ...rest }) => ({
 }));
 export const snapPoint = (velocity, points) => {
 	"worklet";
+	console.log("velocity");
+	console.log(velocity);
+	if (Math.abs(velocity) < window.innerWidth / 3) return 0;
 	const point = velocity;
 	const deltas = points.map((p) => Math.abs(point - p));
 	const minDelta = Math.min.apply(null, deltas);
@@ -50,8 +56,17 @@ export default forwardRef(
 		const controls = useAnimation();
 		// const width = wWidth * 0.75;
 		// const height = width * (425 / 294);
-		const height = wHeight * 0.6;
-		const width = height * (294 / 385);
+
+		// const height = wHeight * 0.6;
+		// const width = height * (294 / 385);
+
+		// const width = wWidth * 0.75;
+		// const height = width * (425 / 294);
+		// const height = wHeight * 0.55;
+		// const width = height * (350 / 385);
+
+		const height = wHeight * HEIGHT_POURCENT_WINDOW;
+		const width = height * RATIO_FROM_HEIGHT;
 
 		const A = Math.round(width * Math.cos(α) + height * Math.sin(α));
 		const backgroundColor = useTransform(
@@ -110,10 +125,21 @@ export default forwardRef(
 		}));
 		// useEffect(() => {
 		// 	x.onChange((latest) => {
-		// 		//console.log("wWidth :" + wWidth + " latest:" + latest);
-		// 		if (latest <= -wWidth || latest >= wWidth) {
-		// 			console.log("wWidth :" + wWidth + " latest:" + latest);
+		// 		const center = wWidth / 2;
+		// 		const left_bound = center - A / 2;
+		// 		const right_bound = center + A;
+		// 		// const offsetX = info.point.x - event.offsetX;
+		// 		console.log("A", A);
+		// 		console.log("wWidth :" + wWidth + " latest:" + latest);
+		// 		if (Math.abs(latest) === A) {
+		// 			console.log("YOU SHOULD SWIPE");
+		// 			setTimeout(() => {
+		// 				x.stop();
+		// 				//x.set(0);
+		// 				onSwipe(latest >= 0);
+		// 			}, 500);
 		// 		}
+
 		// 	});
 		// }, []);
 		let url = "/static/images/cards/contemplative-reptile.jpg";
@@ -126,21 +152,17 @@ export default forwardRef(
 				animate={controls}
 				onAnimationEnd={() => console.log(" c ou a end")}
 				dragTransition={{
-					power: 0.2,
+					power: 0.5,
 					timeConstant: 200,
 					modifyTarget: (target) => snapPoint(target, [-A, 0, A]),
 				}}
 				onDragEnd={(event, info) => {
-					console.log(info);
-					console.log(A);
-					console.log(wWidth / 5);
 					setTimeout(() => {
-						if (info.offset.x < -wWidth / 5 || info.offset.x >= wWidth / 5) {
-							console.log("----oh suivant");
-							x.stop();
-							// //x.set(0);
-							onSwipe(info.offset.x >= wWidth / 4);
+						if (info.velocity.x === 0 && Math.abs(info.offset.x) < A) {
+							return;
 						}
+						x.stop();
+						onSwipe(info.offset.x >= 0);
 					}, 500);
 				}}
 				// onTap={(event, info) => {
@@ -177,6 +199,8 @@ export default forwardRef(
 					{...{ backgroundColor }}
 					item={item}
 					onSave={swipe}
+					{...{ width }}
+					{...{ height }}
 				/>
 			</Box>
 		);

@@ -4,13 +4,14 @@ import {
 	POST_PRESTATION,
 	CREATE_PRESTATION,
 	PRESTATION_EVENT_LISTENER,
+	ERROR_CREATE_PRESTATION,
 } from "../types";
 
 const initialstates = {
 	availablePrestations: [],
 	userPrestations: [],
 	initialValues: {},
-	error: null,
+	errors: null,
 	loading: false,
 	currentPrestation: null,
 	pageLoaded: {},
@@ -45,7 +46,11 @@ export default (state = initialstates, action) => {
 				...state,
 				currentPrestation: action.payload,
 			};
-
+		case ERROR_CREATE_PRESTATION:
+			return {
+				...state,
+				errors: action.payload,
+			};
 		case POST_PRESTATION:
 			return {
 				...state,

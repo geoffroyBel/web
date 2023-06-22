@@ -16,6 +16,9 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@emotion/react";
+import * as actionsOrder from "../../store/actions/order";
+import { useDispatch } from "react-redux";
+import useCheckoutUrl from "../../hooks/useCheckoutUrl";
 
 const CardCustom = styled(motion.div)(({ theme, ...rest }) => ({
 	position: "absolute",
@@ -36,14 +39,25 @@ export const snapPoint = (velocity, points) => {
 	const minDelta = Math.min.apply(null, deltas);
 	return points.filter((p) => Math.abs(point - p) === minDelta)[0];
 };
-export default ({ item = null, scale, backgroundColor, y, x, onSave }) => {
+export default ({
+	item = null,
+	scale,
+	backgroundColor,
+	y,
+	x,
+	onSave,
+	height = 0,
+	width = 0,
+}) => {
+	const [createCheckout] = useCheckoutUrl();
+	const dispatch = useDispatch();
 	const theme = useTheme();
 	const { width: wWidth, height: wHeight } = useWindowDimensions();
 
 	// const width = wWidth * 0.75;
 	// const height = width * (425 / 294);
-	const height = wHeight * 0.55;
-	const width = height * (294 / 385);
+	// const height = wHeight * 0.55;
+	// const width = height * (350 / 385);
 
 	let url = "/static/images/cards/contemplative-reptile.jpg";
 	if (item && item.images[0]) {
@@ -65,7 +79,8 @@ export default ({ item = null, scale, backgroundColor, y, x, onSave }) => {
 				display: "flex",
 				flexDirection: "column",
 				height,
-				maxWidth: 345,
+				width,
+				//maxWidth: 200,
 				borderRadius: "50px",
 				bgcolor: "primary.light",
 			}}>
@@ -138,7 +153,13 @@ export default ({ item = null, scale, backgroundColor, y, x, onSave }) => {
 					size='small'>
 					Share
 				</Button>
-				<Button size='small'>Learn More</Button>
+				<Button
+					onClick={() => {
+						createCheckout();
+					}}
+					size='small'>
+					Learn More
+				</Button>
 			</CardActions>
 		</Card>
 	);

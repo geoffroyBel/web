@@ -10,7 +10,7 @@ export default (props) => {
 		},
 		width = 50,
 		height = 50,
-		d = "M 0 50 A 55 55, 0, 0, 0, 50 0 L 0 0",
+		d = "M 0 50 A 55 55, 0, 0, 1, 50 0 L 0 0",
 		background = "orange",
 	} = props;
 	return (

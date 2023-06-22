@@ -27,6 +27,7 @@ import { Register, Confirm } from "../Authentication/Register";
 import { Sports } from "../Home/Sports/Sports";
 import FavoriteSports from "../Home/FavoritesSports";
 import Drawer from "../Home/Drawer";
+import SportDetail from "../Home/Sports/SportDetail";
 
 const App = () => {
 	const location = useLocation();
@@ -38,7 +39,10 @@ const App = () => {
 			<Routes
 				{...{ location }}
 				key={location.pathname}>
-				<Route path='/'>
+				<Route
+					path='/'
+					// element={<AuthProvider {...{ location }} />}
+				>
 					{/* <Route
 						path='/home'
 						element={<Landing />}
@@ -52,8 +56,17 @@ const App = () => {
 						/>
 						<Route
 							path='sports'
-							element={<Sports />}
-						/>
+							// element={<Sports />}
+						>
+							<Route
+								index
+								element={<Sports />}
+							/>
+							<Route
+								path='detail/:id'
+								element={<SportDetail />}
+							/>
+						</Route>
 						<Route
 							path='favorites'
 							element={<FavoriteSports />}

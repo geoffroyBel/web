@@ -21,6 +21,7 @@ import { Typography } from "@mui/material";
 import NavBar from "../../components/ui/NavBar";
 import { styled } from "@mui/styles";
 import MenuContext, { MenuProvider } from "../../context/MenuContext";
+import { useSelector } from "react-redux";
 const assets = [require("../../img/sport1.png")];
 const aspectRatio = 1075 / 1768;
 const width = 450;
@@ -259,6 +260,7 @@ const Footer = styled(Box)(({ theme }) => ({
 
 export const MyDrawer = ({ navBarPos, navBarColor }) => {
 	const navigate = useNavigate();
+	const { totalItems } = useSelector(({ cart }) => cart);
 	const { isMenuVisible, setIsMenuVisible, headerTitle } =
 		useContext(MenuContext);
 
@@ -296,7 +298,7 @@ export const MyDrawer = ({ navBarPos, navBarColor }) => {
 										vertical: "top",
 										horizontal: "left",
 									}}
-									badgeContent={4}
+									badgeContent={totalItems}
 									color='primary'>
 									<ShoppingCartIcon />
 								</Badge>

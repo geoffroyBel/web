@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: TarifRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        "post" ,
+        "post" => ["security" => "is_granted('ROLE_COMPANY')"],
         "get"
     ],
     itemOperations: [
@@ -41,6 +41,9 @@ class Tarif
 
     #[ORM\ManyToOne(inversedBy: 'tarifs')]
     private ?Prestation $prestation = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $priceId = null;
 
     public function getId(): ?int
     {
@@ -91,6 +94,18 @@ class Tarif
     public function setPrestation(?Prestation $prestation): self
     {
         $this->prestation = $prestation;
+
+        return $this;
+    }
+
+    public function getPriceId(): ?string
+    {
+        return $this->priceId;
+    }
+
+    public function setPriceId(string $priceId): self
+    {
+        $this->priceId = $priceId;
 
         return $this;
     }

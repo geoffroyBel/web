@@ -158,8 +158,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Reservation::class)]
     private Collection $reservations;
 
-    #[Groups(["get-owner"])]
+  
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    #[Groups(["get-owner"])]
     private ?Cart $cart = null;
 
 

@@ -1,6 +1,6 @@
 import User from "../../models/User";
 import api from "../../api/heroku";
-import { FETCH_USER, SIGN_IN } from "../types";
+import { FETCH_CART, FETCH_USER, SIGN_IN } from "../types";
 import { async } from "regenerator-runtime";
 import Axios from "axios";
 import { upload } from "../../api/aws";
@@ -102,9 +102,10 @@ export const isLoading = (bool) => async (dispatch) => {
 export const fetchUser = (id) => async (dispatch) => {
 	try {
 		const { data } = await api.get(`/users/${id}`, { withCredentials: true });
-		console.log(data);
+		dispatch({ type: FETCH_CART, payload: data.cart });
 		dispatch({ type: FETCH_USER, payload: data });
 	} catch (e) {
+		console.log(error);
 		dispatch({
 			type: ERROR_AUTH,
 			payload: errorFunc(e),
@@ -126,8 +127,13 @@ export const signIn =
 				},
 				{ withCredentials: false }
 			);
+			//save token user
+			window.localStorage.setItem("token", token);
+			window.localStorage.setItem("id", JSON.stringify(id));
 
-			console.log(token);
+			//fetchUser
+			await fetchUser(id)(dispatch);
+
 			dispatch({ type: SIGN_IN, payload: { token, id } });
 			completion();
 		} catch (e) {

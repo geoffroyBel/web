@@ -13,11 +13,11 @@ class AbonnementService
     {
         
     }
-    public function finishCheckout(string $chechoutSessionId) {
+    public function finishCheckout(string $chechoutSessionID) {
         //retrieve abonnment
-        $checkOutSessionID = "cs_test_a1gmZf79fE5LzZQaMxw45u0XTCesnXS5vokXO5K3oKVHvUOF7pVty96MW2";
+        //$checkOutSessionID = "cs_test_a1gmZf79fE5LzZQaMxw45u0XTCesnXS5vokXO5K3oKVHvUOF7pVty96MW2";
        /** @var Abonnement $abonnement */
-        $abonnement = $this->manager->getRepository(Abonnement::class)->findOneBy(["checkoutSessionId" => $checkOutSessionID]);
+        $abonnement = $this->manager->getRepository(Abonnement::class)->findOneBy(["checkoutSessionId" => $chechoutSessionID]);
         if(!$abonnement) {
             throw new ServiceException(new ServiceExceptionData(404, "No abonnement was initialized"));
         }

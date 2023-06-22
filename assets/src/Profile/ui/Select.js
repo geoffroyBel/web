@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 
 import styled from "@emotion/styled";
+import ChevronIcon from "../assets/ChevronIcon";
+import { useTheme } from "@emotion/react";
 
 const MySelect = styled(Select)(({ theme }) => ({
 	//backgroundColor: "white",
@@ -31,19 +33,29 @@ const MySelect = styled(Select)(({ theme }) => ({
 	// },
 }));
 export default (props) => {
+	const theme = useTheme();
 	const { label, data, ...rest } = props;
 	const [field, meta] = useField(props);
 	const { value: selectedValue } = field;
-	const [touched, error] = at(meta, "touched", "error");
-	const isError = touched && error && true; //touched &&
+	const [touched, error, initialTouched] = at(
+		meta,
+		"touched",
+		"error",
+		"initialTouched"
+	);
+	const isError = touched || (error && true); //touched &&
 	function _renderHelperText() {
 		if (isError) {
 			return <FormHelperText>{error}</FormHelperText>;
 		}
 	}
-	console.log(field);
+	// console.log(field);
 	const [age, setAge] = React.useState("");
-
+	// useEffect(() => {
+	// 	console.log(isError);
+	// 	console.log(touched);
+	// 	console.log(initialTouched);
+	// }, [error, touched]);
 	const handleBlur = useCallback(() => {
 		// console.log("---------META-------------");
 		// console.log(isError);
@@ -60,34 +72,41 @@ export default (props) => {
 		// }
 	};
 	return (
-		<Box sx={{ maxWidth: 350 }}>
+		<Box>
 			<FormControl
-				variant='standard'
+				// variant='standard'
 				{...rest}
-				error={isError}
+				error={(!touched && initialTouched) || error}
 				fullWidth
 				onBlur={handleBlur}>
-				<InputLabel>{label}</InputLabel>
+				<InputLabel>
+					{(!touched && initialTouched) || error || label}
+				</InputLabel>
 				<MySelect
+					color='primary'
 					labelId='demo-simple-select-label'
 					id='demo-simple-select'
-					// sx={{
-					// 	borderRadius: 20,
-					// 	backgroundColor: "background.light",
-					// 	fontWeight: "bolder",
-					// 	fontSize: "45px",
-
-					// 	"& .MuiSvgIcon-root": {
-					// 		//marginRight: "10px",
-					// 		top: "50%",
-					// 		transform: "translateY(-50%)",
-					// 		height: 40,
-					// 		width: 40,
-					// 		color: "white",
-					// 		borderRadius: "50%",
-					// 		backgroundColor: "primary.main",
-					// 	},
-					// }}
+					sx={{
+						color: "white",
+						".MuiOutlinedInput-notchedOutline": {
+							borderColor: theme.palette.primary.main,
+						},
+					}}
+					IconComponent={() => (
+						<div
+							style={{
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								padding: "0 10px 0 0",
+							}}>
+							<ChevronIcon
+								color={
+									error ? theme.palette.error.main : theme.palette.primary.main
+								}
+							/>
+						</div>
+					)}
 					{...field}
 					onClick={handleClick}
 					value={selectedValue ? selectedValue : ""}
@@ -100,7 +119,7 @@ export default (props) => {
 						</MenuItem>
 					))}
 				</MySelect>
-				{_renderHelperText()}
+				{/* {_renderHelperText()} */}
 			</FormControl>
 		</Box>
 	);

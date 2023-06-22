@@ -18,6 +18,7 @@ const initialStates = {
 	url: null,
 };
 export default (state = initialStates, action) => {
+	console.log(action);
 	switch (action.type) {
 		case FETCH_COMPANY:
 			return {
@@ -31,7 +32,7 @@ export default (state = initialStates, action) => {
 				action.payload.id,
 				action.payload.name,
 				action.payload.accountID,
-				action.payload.url,
+				action.payload.accountLink,
 				action.payload.status
 			);
 			console.log(company);

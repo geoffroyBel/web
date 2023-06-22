@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use function PHPUnit\Framework\isEmpty;
+
 class ServiceExceptionData
 {
 
-    public function __construct(protected int $statusCode, protected string $type)
+    public function __construct(protected int $statusCode, protected string $type, protected string $msg = "")
     {
     }
 
@@ -23,7 +25,7 @@ class ServiceExceptionData
     {
         return [
             'type' => $this->type,
-            'message' => $this->type
+            'message' => isEmpty($this->msg)?$this->type:$this->msg 
         ];
     }
 }

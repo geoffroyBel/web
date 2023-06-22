@@ -17,15 +17,11 @@ export const createCompany =
 		dispatch({ type: IS_LOADING, payload: true });
 		try {
 			const { data: company } = await api.post("/companies", values, config);
-
-			const {
-				data: { accountID, accountLink: url },
-			} = await api.put(`company/${company.id}/create/stripe`, {}, config);
-			completion();
 			dispatch({
 				type: CREATE_COMPANY,
-				payload: { ...company, accountID, url },
+				payload: { ...company },
 			});
+			completion();
 		} catch (e) {
 			dispatch({ type: IS_LOADING, payload: false });
 			dispatch({

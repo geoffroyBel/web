@@ -22,8 +22,10 @@ use Stripe\PaymentIntent;
 use Stripe\Event;
 use Stripe\Account;
 use Stripe\AccountLink;
+use Stripe\Product;
 
 use Ramsey\Uuid\Uuid;
+use Stripe\Price;
 
 class StripeService extends Stripe
 {
@@ -128,26 +130,44 @@ class StripeService extends Stripe
 
     public function createSession(Prestation $prestation, Tarif $tarif, $quantity)
     {
-        try {
 
+        /*
+        $accountId = $prestation->getCompany()->getAccountID();
+        
+        $session = Session::create([
+        'line_items' => [[
+            'price' => '$priceId',
+            'quantity' => 1,
+        ]],
+        'payment_intent_data' => [
+            'application_fee_amount' => 123,
+        ],
+        'mode' => 'payment',
+        'success_url' => 'https://example.com/success',
+        'cancel_url' => 'https://example.com/cancel',
+        ], ['stripe_account' => '{{CONNECTED_STRIPE_ACCOUNT_ID}}']);
+        */
+        $baseSuccessUrl = $this->domain."/home/sports/detail/".$prestation->getId();
+
+        try {
+                $accountId = $prestation->getCompany()->getAccountID();
+                $priceId = $tarif->getPrice();
                 return Session::create([
-                    'success_url' => 'https://example.com/success',
-                    'cancel_url' => 'https://example.com/cancel',
                     'payment_method_types' => ['card'],
                     'line_items' => [[
                         'name' => $prestation->getName(),
                         'description' => 'Comfortable cotton t-shirt',
                         'amount' => $tarif->getPrice() * 100,
-                        'currency' => 'usd',
+                        'currency' => 'eur',
                         'quantity' => $quantity,
                     ]],
-                    // 'payment_intent_data' => [
-                    //     'application_fee_amount' => 123,
-                    //     'transfer_data' => ['destination' => '{{CONNECTED_ACCOUNT_ID}}'],
-                    //   ],
-                    // 'success_url' => 'https://example.com/success',
-                    // 'cancel_url' => 'https://example.com/cancel',
-                ]);
+                    'payment_intent_data' => [
+                        'application_fee_amount' => 123,
+                        // 'transfer_data' => ['destination' => $accountId],
+                      ],
+                      'success_url' => $baseSuccessUrl."?success=true",
+                      'cancel_url' => $baseSuccessUrl."?success=false",
+                ], ['stripe_account' => $accountId]);
 
         } catch (RateLimitException $e) {
             $this->error = "Too many requests made to the API too quickly";
@@ -168,10 +188,77 @@ class StripeService extends Stripe
        throw new \Exception($this->error);
     }
 
+    public function createProduct($name, $accountID):?Product
+    {
+        try {
+            return Product::create(
+                [
+                    'active' => true,
+                    'name' => $name,
+                ], 
+                [
+                'stripe_account' => $accountID
+                ]
+            );
+        } catch (RateLimitException $e) {
+            $this->error = "Too many requests made to the API too quickly";
+        } catch (InvalidRequestException $e) {
+          
+            $this->error = "Invalid parameters were supplied to Stripe's API";
+
+        } catch (AuthenticationException $e) {
+            $this->error = "Authentication with Stripe's API failed check keys";
+        } catch (ApiConnectionException $e) {
+            $this->error = "Network communication with Stripe failed";
+        } catch (ApiErrorException $e) {
+            $this->error = "check stripe account";
+        }catch (\Exception $e) {
+            $this->error = "Something else happened, completely unrelated to Stripe";
+        }
+       // var_dump($this->error);
+       throw new ServiceException(new ServiceExceptionData(500, $this->error));
+    }
+    
+    public function createPrice ($productId, $accountId, $data): ?Price
+    {
+        // $stripe->prices->create([
+//     'product' => '{{PRODUCT_ID}}',
+//     'unit_amount' => 2000,
+//     'currency' => 'usd',
+//     'recurring' => ['interval' => 'month'],
+//     'lookup_key' => 'standard_monthly',
+//     'transfer_lookup_key' => true,
+//   ]);
+        try { 
+            return Price::create([ 
+                    'product' => $productId,
+                    'unit_amount' => 2000,
+                    'currency' => 'eur',
+            ],
+            [
+                'stripe_account' => $accountId
+            ]);
+        } catch (RateLimitException $e) {
+            $this->error = "Too many requests made to the API too quickly";
+        } catch (InvalidRequestException $e) {
+        var_dump($e->getMessage());
+            $this->error = "Invalid parameters were supplied to Stripe's API";
+
+        } catch (AuthenticationException $e) {
+            $this->error = "Authentication with Stripe's API failed check keys";
+        } catch (ApiConnectionException $e) {
+            $this->error = "Network communication with Stripe failed";
+        } catch (ApiErrorException $e) {
+            $this->error = "check stripe account";
+        }catch (\Exception $e) {
+            $this->error = "Something else happened, completely unrelated to Stripe";
+        }
+     
+        throw new ServiceException(new ServiceExceptionData(500, $this->error));
 
 
 
-
+    }
 
     /**
      * @return mixed

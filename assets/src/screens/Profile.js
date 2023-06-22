@@ -82,7 +82,7 @@ const Profile = ({ createCompany, company }) => {
 	const [searchParams] = useSearchParams();
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const user = useSelector(({ user }) => user);
+	const { user } = useSelector(({ auth }) => auth);
 	const { loading, url } = useSelector(({ company }) => company);
 	const [activeStep, setActiveStep] = useState(0);
 	const currentValidationSchema = validationSchema[activeStep];
@@ -109,8 +109,10 @@ const Profile = ({ createCompany, company }) => {
 
 	function _handleSubmit(values, actions) {
 		if (activeStep === 0) {
-			//dispatch(companyActions.createCompany(values, user));
-			//createCompany();
+			console.log("first step");
+			console.log(user);
+			// dispatch(companyActions.createCompany(values, user));
+			createCompany();
 			setActiveStep(activeStep + 1);
 			activeStep;
 		} else if (isLastStep) {
@@ -147,7 +149,9 @@ const Profile = ({ createCompany, company }) => {
 					zIndex: 10,
 					overflow: "scroll",
 				}}>
-				<Stepper activeStep={activeStep} className={classes.stepper}>
+				<Stepper
+					activeStep={activeStep}
+					className={classes.stepper}>
 					{steps.map((label) => (
 						<Step key={label}>
 							<StepLabel>{label}</StepLabel>
@@ -239,7 +243,9 @@ const Profile = ({ createCompany, company }) => {
 
 								<div className={classes.buttons}>
 									{activeStep !== 0 && (
-										<Button onClick={_handleBack} className={classes.button}>
+										<Button
+											onClick={_handleBack}
+											className={classes.button}>
 											Back
 										</Button>
 									)}

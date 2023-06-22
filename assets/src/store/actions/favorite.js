@@ -26,3 +26,15 @@ export const getFavorites = (prestations) => async (dispatch) => {
 		dispatch({ type: ERROR, payload: error.message });
 	}
 };
+
+export const removeFavorites =
+	(ids = []) =>
+	async (dispatch) => {
+		try {
+			let prestations = JSON.parse(window.localStorage.getItem("prestations"));
+			window.localStorage.setItem("prestations", JSON.stringify([]));
+			dispatch({ type: FETCH_FAVORITES, payload: [] });
+		} catch (error) {
+			dispatch({ type: ERROR, payload: error.message });
+		}
+	};

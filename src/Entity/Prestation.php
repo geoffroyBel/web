@@ -103,6 +103,9 @@ class Prestation implements AuthoredEntityInterface, CompanyInterface
     #[ApiSubresource]
     private Collection $images;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $productID = null;
+
 
 
     public function __construct()
@@ -429,6 +432,18 @@ class Prestation implements AuthoredEntityInterface, CompanyInterface
                 $image->setPrestation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProductID(): ?string
+    {
+        return $this->productID;
+    }
+
+    public function setProductID(?string $productID): self
+    {
+        $this->productID = $productID;
 
         return $this;
     }

@@ -6,7 +6,19 @@ import Favorite from "./Favorite";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { useTheme } from "@mui/styles";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import * as actions from "../../store/actions/favorite";
 
+const defaultColors = [
+	"#BFEAF5",
+	"#BEECC4",
+	"#FFE4D9",
+	"#BEECC4",
+	"#D5C3BB",
+	"#F3F0EF",
+	"#DEEFC4",
+];
+const defaultAspectRatio = [1, 200 / 145, 180 / 145, 120 / 145];
 const defaultFavorites = [
 	{
 		id: 1,
@@ -64,6 +76,34 @@ function index() {
 	const [width, setWidth] = useState(null);
 	const [favorites, setFavorites] = useState(defaultFavorites);
 	const [selectedFavorites, setSelectedFavorites] = useState([]);
+	const { prestations } = useSelector(({ favorites }) => favorites);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(actions.getFavorites());
+	}, []);
+
+	useEffect(() => {
+		let _a = 0;
+		let _c = 0;
+		const selecteds = prestations
+			.filter((p) => p !== null)
+			.map((p, index) => {
+				if (_a === defaultAspectRatio.length) _a = 0;
+				if (_c === defaultColors.length) _c = 0;
+				const fav = {
+					id: index,
+					aspectRatio: defaultAspectRatio[_a],
+					color: defaultColors[_c],
+					selected: false,
+				};
+				_c += 1;
+				_a += 1;
+				return fav;
+			});
+		console.log(selecteds);
+		setFavorites(selecteds);
+	}, [prestations]);
 	useEffect(() => {
 		setWidth((wWidth - Number(theme.spacing(3).replace(/\D/g, "")) * 3) / 2);
 	}, [wWidth]);
@@ -104,6 +144,8 @@ function index() {
 			</Box>
 			<Footer
 				label='Add to your favorites'
+				deleteLabel='Remove All'
+				onDelete={() => dispatch(actions.removeFavorites())}
 				onPress={() => setFavorites((prev) => prev.filter((f) => f.selected))}
 			/>
 		</Box>

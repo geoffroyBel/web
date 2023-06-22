@@ -60,7 +60,8 @@ class CreateAbonnementSubscriber implements EventSubscriberInterface
         $prestation = $tarif->getPrestation();
 
         $session = $this->stripe->createSession($prestation, $tarif, 1);
-
+    
+        $entity->setCheckoutUrl($session->url);
         $entity->setCheckoutSessionId($session->id);
         $entity->setUser($user);
         $entity->setPaymentStatus("pending");
