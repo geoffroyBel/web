@@ -236,7 +236,7 @@ const MyCard = ({
 							padding: 3,
 						}}>
 						<Button
-							onClick={() => navigate("/home/sports/detail/51")}
+							onClick={() => navigate("/home/sports/detail/194")}
 							sx={{ maxWidth: 150, borderRadius: 2, padding: 2 }}
 							variant='contained'
 							color='primary'>
