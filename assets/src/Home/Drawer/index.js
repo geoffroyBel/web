@@ -66,7 +66,7 @@ const items = [
 		),
 	},
 	{
-		label: "Edit Profile",
+		label: "Profile",
 		screen: "profile",
 		color: "primary.main",
 		link: "/profile/edit",
@@ -78,19 +78,19 @@ const items = [
 			/>
 		),
 	},
-	{
-		label: "Settings",
-		screen: "Settings",
-		color: "primary.main",
-		link: "/home/sports",
-		icon: () => (
-			<InboxIcon
-				p={0}
-				m={0}
-				color='background'
-			/>
-		),
-	},
+	// {
+	// 	label: "Settings",
+	// 	screen: "Settings",
+	// 	color: "primary.main",
+	// 	link: "/home/sports",
+	// 	icon: () => (
+	// 		<InboxIcon
+	// 			p={0}
+	// 			m={0}
+	// 			color='background'
+	// 		/>
+	// 	),
+	// },
 ];
 const Container = ({ onClick, onKeyDown, children }) => (
 	<Box
