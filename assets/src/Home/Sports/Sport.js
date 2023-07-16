@@ -20,13 +20,22 @@ import * as actionsOrder from "../../store/actions/order";
 import { useDispatch } from "react-redux";
 import useCheckoutUrl from "../../hooks/useCheckoutUrl";
 
+import CardHeader from "@mui/material/CardHeader";
+
+import Avatar from "@mui/material/Avatar";
+import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+
+import { red } from "@mui/material/colors";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import MyCard from "../FavoritesSports/Card";
+
 const CardCustom = styled(motion.div)(({ theme, ...rest }) => ({
 	position: "absolute",
 	display: "flex",
 	justifyContent: "center",
 	alignItems: "center",
 	backgroundColor: "orange",
-	borderRadius: "70px",
+	borderRadius: "20px",
 	top: 0,
 	left: 0,
 	right: 0,
@@ -48,6 +57,11 @@ export default ({
 	onSave,
 	height = 0,
 	width = 0,
+	username = "geoff",
+	title = "Cours de Skateboard",
+	price = 30,
+	description = "decrire votre stuff",
+	checkoutParams = null,
 }) => {
 	const [createCheckout] = useCheckoutUrl();
 	const dispatch = useDispatch();
@@ -66,6 +80,26 @@ export default ({
 	const like = useTransform(x, [0, wWidth / 4], [0, 1]);
 	const nope = useTransform(x, [-wWidth / 4, 0], [1, 0]);
 	return (
+		<MyCard
+			component={motion.div}
+			imageUrl={url}
+			headerTitle={username}
+			color={backgroundColor}
+			{...{ title }}
+			{...{ description }}
+			{...{ price }}
+			{...{ height }}
+			{...{ width }}
+			{...{ checkoutParams }}
+			style={{
+				scale,
+				backgroundColor,
+				y,
+				boxShadow: `2px 2px 2px 2px rgba(0, 0, 0, 0.5)`,
+			}}
+		/>
+	);
+	return (
 		<Card
 			component={motion.div}
 			style={{
@@ -81,9 +115,35 @@ export default ({
 				height,
 				width,
 				//maxWidth: 200,
-				borderRadius: "50px",
+				borderRadius: "20px",
 				bgcolor: "primary.light",
 			}}>
+			<CardHeader
+				sx={{
+					"&.MuiCardHeader-root": {
+						background: "rgb(2,0,36)",
+						background:
+							"linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(9,9,121,0) 80%)",
+						"&.MuiCardHeader-title": {
+							fontSize: "4rem",
+						},
+					},
+				}}
+				avatar={
+					<Avatar
+						sx={{ bgcolor: red[500] }}
+						aria-label='recipe'>
+						R
+					</Avatar>
+				}
+				action={
+					<IconButton aria-label='settings'>
+						<MoreVertIcon />
+					</IconButton>
+				}
+				title={username}
+				subheader={title}
+			/>
 			<CardMedia
 				sx={{ height: 240, padding: 2 }}
 				image={url}
@@ -130,7 +190,7 @@ export default ({
 					</Box>
 				</Box>
 			</CardMedia>
-			<CardContent>
+			{/* <CardContent>
 				<Typography
 					gutterBottom
 					variant='h5'
@@ -143,7 +203,7 @@ export default ({
 					Lizards are a widespread group of squamate reptiles, with over 6,000
 					species, ranging across all continents except Antarctica
 				</Typography>
-			</CardContent>
+			</CardContent> */}
 			<CardActions sx={{ marginTop: "auto", marginBottom: 2 }}>
 				<Button
 					onClick={() => {
@@ -151,14 +211,16 @@ export default ({
 						console.log("ohhhhhhh");
 					}}
 					size='small'>
-					Share
+					{price} euros / séances
 				</Button>
 				<Button
+					sx={{ borderRadius: 2 }}
+					variant='outlined'
 					onClick={() => {
 						createCheckout();
 					}}
 					size='small'>
-					Learn More
+					Reservation Immediate
 				</Button>
 			</CardActions>
 		</Card>

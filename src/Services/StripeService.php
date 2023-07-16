@@ -131,48 +131,40 @@ class StripeService extends Stripe
     public function createSession(Prestation $prestation, Tarif $tarif, $quantity)
     {
 
-        /*
-        $accountId = $prestation->getCompany()->getAccountID();
-        
-        $session = Session::create([
-        'line_items' => [[
-            'price' => '$priceId',
-            'quantity' => 1,
-        ]],
-        'payment_intent_data' => [
-            'application_fee_amount' => 123,
-        ],
-        'mode' => 'payment',
-        'success_url' => 'https://example.com/success',
-        'cancel_url' => 'https://example.com/cancel',
-        ], ['stripe_account' => '{{CONNECTED_STRIPE_ACCOUNT_ID}}']);
-        */
         $baseSuccessUrl = $this->domain."/home/sports/detail/".$prestation->getId();
 
         try {
                 $accountId = $prestation->getCompany()->getAccountID();
-                $priceId = $tarif->getPrice();
-                return Session::create([
+                $fees_percent = 10;
+                $fee = ($tarif->getPrice() * 100) * ($fees_percent/100);
+                $body = [
                     'payment_method_types' => ['card'],
                     'line_items' => [[
-                        'name' => $prestation->getName(),
-                        'description' => 'Comfortable cotton t-shirt',
-                        'amount' => $tarif->getPrice() * 100,
-                        'currency' => 'eur',
+                        'description' => $prestation->getDescription(),
+                        'price' => $tarif->getPriceId(),
                         'quantity' => $quantity,
                     ]],
-                    'payment_intent_data' => [
-                        'application_fee_amount' => 123,
-                        // 'transfer_data' => ['destination' => $accountId],
-                      ],
                       'success_url' => $baseSuccessUrl."?success=true",
                       'cancel_url' => $baseSuccessUrl."?success=false",
-                ], ['stripe_account' => $accountId]);
+                    ];
+                   if($tarif->getType() == "forfait") {
+                        $body["mode"] =  'payment';
+                        $body["payment_intent_data"] = [
+                                'application_fee_amount' => $fee,
+                                // 'transfer_data' => ['destination' => $accountId],
+                        ];
+                   }  else {
+                        $body["mode"] =  'subscription';
+                        $body["subscription_data"] = [
+                            'application_fee_percent' => $fees_percent,
+                        ];
+                   }
+                   
+                return Session::create($body, ['stripe_account' => $accountId]);
 
         } catch (RateLimitException $e) {
             $this->error = "Too many requests made to the API too quickly";
         } catch (InvalidRequestException $e) {
-          
             $this->error = "Invalid parameters were supplied to Stripe's API";
 
         } catch (AuthenticationException $e) {
@@ -219,25 +211,28 @@ class StripeService extends Stripe
        throw new ServiceException(new ServiceExceptionData(500, $this->error));
     }
     
-    public function createPrice ($productId, $accountId, $data): ?Price
+    public function createPrice ($productId, $accountId, $type, $amount): ?Price
     {
-        // $stripe->prices->create([
-//     'product' => '{{PRODUCT_ID}}',
-//     'unit_amount' => 2000,
-//     'currency' => 'usd',
-//     'recurring' => ['interval' => 'month'],
-//     'lookup_key' => 'standard_monthly',
-//     'transfer_lookup_key' => true,
-//   ]);
+        $params = [ 
+            'product' => $productId,
+            'unit_amount' => $amount * 100,
+            'currency' => 'eur'
+        ];
+        $config =   [
+            'stripe_account' => $accountId
+        ];
+
+        switch($type) {
+            case "mensuel":
+                $params["recurring"] = ['interval' => 'month'];
+            break;
+            case "annuel":
+                $params["recurring"] = ['interval' => 'year'];
+            break;
+        }
+
         try { 
-            return Price::create([ 
-                    'product' => $productId,
-                    'unit_amount' => 2000,
-                    'currency' => 'eur',
-            ],
-            [
-                'stripe_account' => $accountId
-            ]);
+            return Price::create($params,$config);
         } catch (RateLimitException $e) {
             $this->error = "Too many requests made to the API too quickly";
         } catch (InvalidRequestException $e) {

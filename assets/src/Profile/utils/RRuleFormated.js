@@ -110,16 +110,28 @@ const getHoraireByWeek = (horaires, bounds) => {
 	// 	return acc;
 	// }, {});
 };
-
+const getCurrentDate = () => {
+	return dateFns.dayjs().format("YYYY-MM-DD");
+};
+const getStartDate = (horaire) => {
+	return dateFns.dayjs(horaire.startDate).format("YYYY-MM-DDTHH:mm:ss");
+};
 const getEndDate = (horaire) => {
 	//WARNING endDay not endDate
-	if (!horaire.rRule) return dateFns.dayjs(horaire.endDate || horaire.endDay);
+	if (!horaire.rRule)
+		return dateFns
+			.dayjs(horaire.endDate || horaire.endDay)
+			.format("YYYY-MM-DDTHH:mm:ss");
 
 	const options = getOptionsRRule(horaire.rRule);
 
 	if (options["COUNT"] || options["UNTIL"]) {
 		const dates = getHorairesFromRrule(horaire);
-		return dateFns.dayjs(new Date(dates[dates.length - 1]));
+		return `${dateFns
+			.dayjs(new Date(dates[dates.length - 1]))
+			.format("YYYY-MM-DD")}T${dateFns
+			.dayjs(horaire.endDate)
+			.format("HH:mm:ss")}`;
 	} else {
 		return null;
 	}
@@ -362,4 +374,7 @@ export {
 	horaireModelHelper,
 	getHoraireByDay,
 	getHoraireByWeek,
+	getEndDate,
+	getStartDate,
+	getCurrentDate,
 };

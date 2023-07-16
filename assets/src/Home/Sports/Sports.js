@@ -24,12 +24,15 @@ import IconButton from "@mui/material/IconButton";
 const cards = [{ index: 3 }, { index: 2 }, { index: 1 }, { index: 0 }];
 const step = 1 / (cards.length - 1);
 export const Sports = () => {
+	const [selectedCategory, setSelectedCategory] = useState(null);
+
 	const topCard = useRef(null);
 	const dispatch = useDispatch();
 	useHeaderTitle("Coaches");
 	const prestations = useSelector(
 		({ prestations }) => prestations.availablePrestations
 	);
+	const { user } = useSelector(({ auth }) => auth);
 	const [slides, setSlides] = useState([
 		{ index: 3 },
 		{ index: 2 },
@@ -44,8 +47,18 @@ export const Sports = () => {
 	const parent_scale = useMotionValue(0);
 
 	useEffect(() => {
+		alert(currentPage);
 		dispatch(actions.fetchPrestations(currentPage));
 	}, [currentPage]);
+
+	useEffect(() => {
+		if (selectedCategory) {
+			//setCurrentPage(1);
+			setCurrentIndex(0);
+			setInit(true);
+			dispatch(actions.fetchPrestations(1, selectedCategory));
+		}
+	}, [selectedCategory]);
 
 	useEffect(() => {
 		if (!prestations.length) return;
@@ -66,7 +79,7 @@ export const Sports = () => {
 			console.log(slides[3].index);
 			const current = _slides.pop();
 			// console.log(slides.pop().index);
-			console.log(current.index);
+			// console.log(current.index);
 			current.index += 4;
 			current.item = prestations[current.index];
 			_slides = [current, ..._slides];
@@ -115,7 +128,7 @@ export const Sports = () => {
 				overflow: "hidden",
 			}}>
 			<Background />
-			<Categories />
+			<Categories handleSelect={setSelectedCategory} />
 			<Box
 				sx={{
 					width: "100%",
@@ -135,6 +148,7 @@ export const Sports = () => {
 								<Swipeable
 									ref={ref}
 									key={index}
+									{...{ user }}
 									{...{ position }}
 									{...{ index }}
 									{...{ aIndex }}

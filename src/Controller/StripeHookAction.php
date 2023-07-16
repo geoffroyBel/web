@@ -47,7 +47,8 @@ Class StripeHookAction extends AbstractController {
      
             return new JsonResponse([['error' => $e->getMessage(),'status'=>403]]);
         }
-        $this->logger->info("Session ? : Oh pourquoi");
+        $this->logger->info("Session ? : Dam");
+        $this->logger->info($event);
         $this->logger->info($event->type);
   
         switch ($event->type) {
@@ -63,6 +64,12 @@ Class StripeHookAction extends AbstractController {
                 //$this->manager->flush();
                 //$abonnement->modify();
                 
+                break;
+            case 'invoice.payment_succeeded':
+            case 'customer.subscription.created':
+                $this->logger->info("en theorie c ici et l abonnement au dessus ?");
+                $this->logger->info( $event->data->object);
+             
                 break;
             case 'account.updated':
                 //NODE.js ex:

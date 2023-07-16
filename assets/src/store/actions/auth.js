@@ -1,6 +1,13 @@
 import User from "../../models/User";
 import api from "../../api/heroku";
-import { FETCH_CART, FETCH_USER, SIGN_IN } from "../types";
+import {
+	FETCH_ALL_USER_ABONNEMENT,
+	FETCH_ALL_USER_RESERVATION,
+	FETCH_CART,
+	FETCH_USER,
+	SIGN_IN,
+	SIGN_OUT,
+} from "../types";
 import { async } from "regenerator-runtime";
 import Axios from "axios";
 import { upload } from "../../api/aws";
@@ -56,6 +63,14 @@ export const tryLocalSignin =
 				});
 				console.log(data);
 				console.log("--------------");
+				dispatch({
+					type: FETCH_ALL_USER_RESERVATION,
+					payload: data.reservations["hydra:member"],
+				});
+				dispatch({
+					type: FETCH_ALL_USER_ABONNEMENT,
+					payload: data.abonnements["hydra:member"],
+				});
 				dispatch({ type: FETCH_USER, payload: data });
 				dispatch({ type: SIGN_IN, payload: { token, id } });
 				//completion();
@@ -99,9 +114,21 @@ export const tryLocalSignin =
 export const isLoading = (bool) => async (dispatch) => {
 	dispatch({ type: IS_LOADING, payload: bool });
 };
-export const fetchUser = (id) => async (dispatch) => {
+export const fetchUser = (id, completion) => async (dispatch) => {
 	try {
 		const { data } = await api.get(`/users/${id}`, { withCredentials: true });
+		console.log("FETCH USER");
+		console.log(data);
+
+		completion();
+		dispatch({
+			type: FETCH_ALL_USER_RESERVATION,
+			payload: data.reservations["hydra:member"],
+		});
+		dispatch({
+			type: FETCH_ALL_USER_ABONNEMENT,
+			payload: data.abonnements["hydra:member"],
+		});
 		dispatch({ type: FETCH_CART, payload: data.cart });
 		dispatch({ type: FETCH_USER, payload: data });
 	} catch (e) {
@@ -112,6 +139,14 @@ export const fetchUser = (id) => async (dispatch) => {
 		});
 	}
 };
+export const signOut =
+	(completion = () => alert("sign out")) =>
+	async (dispatch) => {
+		window.localStorage.removeItem("token");
+		window.localStorage.removeItem("id");
+		completion();
+		dispatch({ type: SIGN_OUT });
+	};
 export const signIn =
 	({ username, password, email }, completion = () => {}) =>
 	async (dispatch) => {
@@ -132,10 +167,10 @@ export const signIn =
 			window.localStorage.setItem("id", JSON.stringify(id));
 
 			//fetchUser
-			await fetchUser(id)(dispatch);
+
+			await fetchUser(id, completion)(dispatch);
 
 			dispatch({ type: SIGN_IN, payload: { token, id } });
-			completion();
 		} catch (e) {
 			dispatch({
 				type: ERROR_AUTH,

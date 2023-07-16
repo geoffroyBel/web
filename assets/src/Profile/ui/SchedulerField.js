@@ -17,12 +17,6 @@ export default (props) => {
 	const { setTouched, setValue } = helper;
 	const { setFieldValue } = useFormikContext();
 
-	console.log("---------------scheduler field");
-	// console.log(field);
-	// console.log(touched);
-	// //console.log(context);
-	// console.log(helper);
-	console.log(value);
 	const handleCreate = (horaire) => {
 		setData([...data, horaire]);
 		// setTouched(true);

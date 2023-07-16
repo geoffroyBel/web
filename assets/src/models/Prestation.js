@@ -9,5 +9,6 @@ export class Prestation {
 		this.categories = data.categories || [];
 		this.images = data.images || [];
 		this.subscription = data.subscription || [];
+		this.type = data.type || "Cours";
 	}
 }

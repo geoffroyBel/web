@@ -8,6 +8,7 @@ import { useTheme } from "@mui/styles";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../store/actions/favorite";
+import * as actionCategories from "../../store/actions/category";
 
 const defaultColors = [
 	"#BFEAF5",
@@ -80,12 +81,15 @@ function index() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
+		dispatch(actionCategories.fetchCategories());
+		dispatch(actionCategories.fetchTypes());
 		dispatch(actions.getFavorites());
 	}, []);
 
 	useEffect(() => {
 		let _a = 0;
 		let _c = 0;
+
 		const selecteds = prestations
 			.filter((p) => p !== null)
 			.map((p, index) => {
@@ -96,6 +100,7 @@ function index() {
 					aspectRatio: defaultAspectRatio[_a],
 					color: defaultColors[_c],
 					selected: false,
+					...p,
 				};
 				_c += 1;
 				_a += 1;
@@ -122,6 +127,7 @@ function index() {
 									key={favorite.id}
 									{...{ favorite }}
 									width={width}
+
 									// onPress={() =>
 									// 	setSelectedFavorites((prev) => [...prev, favorite.id])
 									// }

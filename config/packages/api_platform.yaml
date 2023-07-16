@@ -7,4 +7,6 @@ api_platform:
     versions: [3]
   collection:
     pagination:
+      client_enabled: true
+      client_items_per_page: true
       items_per_page: 5

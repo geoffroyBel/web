@@ -18,7 +18,6 @@ const initialStates = {
 	url: null,
 };
 export default (state = initialStates, action) => {
-	console.log(action);
 	switch (action.type) {
 		case FETCH_COMPANY:
 			return {

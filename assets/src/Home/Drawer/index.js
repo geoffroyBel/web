@@ -53,6 +53,19 @@ const items = [
 		),
 	},
 	{
+		label: "Reservations",
+		screen: "Reservations",
+		color: "primary.main",
+		link: "/home/reservation",
+		icon: () => (
+			<InboxIcon
+				p={0}
+				m={0}
+				color='background'
+			/>
+		),
+	},
+	{
 		label: "Edit Profile",
 		screen: "profile",
 		color: "primary.main",

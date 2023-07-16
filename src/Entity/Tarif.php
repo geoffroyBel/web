@@ -24,26 +24,31 @@ class Tarif
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["list_prestation"])]
+    #[Groups(["list_prestation", "get_prestation", "post-reservation"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(["get_tarif", "list_prestation"])]
+    #[Groups(["get_tarif", "list_prestation", "get_prestation" , "post-reservation", "list-reservation"])]
     private ?string $type = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["get_tarif", "list_prestation"])]
+    #[Groups(["get_tarif", "list_prestation", "get_prestation", "list-reservation"])]
     private ?float $price = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["get_tarif", "list_prestation"])]
+    #[Groups(["get_tarif", "list_prestation", "get_prestation"])]
     private ?int $credits = null;
 
     #[ORM\ManyToOne(inversedBy: 'tarifs')]
     private ?Prestation $prestation = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(["list_prestation", "get_prestation"])]
     private ?string $priceId = null;
+
+    #[Groups(["list_prestation", "get_prestation"])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $name = null;
 
     public function getId(): ?int
     {
@@ -106,6 +111,18 @@ class Tarif
     public function setPriceId(string $priceId): self
     {
         $this->priceId = $priceId;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
 
         return $this;
     }

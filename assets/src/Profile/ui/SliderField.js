@@ -1,7 +1,15 @@
 import React from "react";
 import { at } from "lodash";
 import { useField } from "formik";
-import { TextField, Box, Slider, FormControl, InputLabel } from "@mui/material";
+import {
+	TextField,
+	Box,
+	Slider,
+	FormControl,
+	InputLabel,
+	Typography,
+	FormHelperText,
+} from "@mui/material";
 import styled from "@emotion/styled";
 import Tooltip from "@mui/material/Tooltip";
 function ValueLabelComponent(props) {
@@ -17,8 +25,8 @@ function ValueLabelComponent(props) {
 	);
 }
 const PrettoSlider = styled(Slider)(({ theme }) => ({
-	marginTop: 50,
-	color: theme.palette.primary.ultraLight,
+	// marginTop: 50,
+	color: theme.palette.primary.light,
 	height: 8,
 	"& .MuiSlider-track": {
 		border: "none",
@@ -78,6 +86,10 @@ export default function SliderField(props) {
 		<FormControl
 			error={true}
 			fullWidth>
+			<Typography
+				color='primary.main'
+				textAlign={"center"}
+				variant='title'>{`${field.value || 20} euros`}</Typography>
 			<PrettoSlider
 				color='secondary'
 				getAriaLabel={() => "Temperature range"}
@@ -91,9 +103,9 @@ export default function SliderField(props) {
 					field.onChange(event);
 				}}
 				aria-label='Default'
-				getAriaValueText={(value) => `${value}`}
+				getAriaValueText={(value) => `${value} euros`}
 				step={1}
-				valueLabelDisplay='on'
+				//valueLabelDisplay='on'
 				defaultValue={20}
 			/>
 			{_renderHelperText()}

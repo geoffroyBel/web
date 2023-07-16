@@ -5,6 +5,7 @@ import companyReducer from "./company";
 import favoriteReducer from "./favorite";
 import cartReducer from "./cart";
 import orderReducer from "./order";
+import reservation from "./reservation";
 
 export default combineReducers({
 	auth: authReducer,
@@ -13,4 +14,5 @@ export default combineReducers({
 	company: companyReducer,
 	cart: cartReducer,
 	order: orderReducer,
+	reservations: reservation,
 });

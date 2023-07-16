@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Formik, useFormikContext } from "formik";
 import Box from "@mui/material/Box";
 import styled from "@mui/system/styled";
@@ -10,6 +10,7 @@ import {
 	useScroll,
 	useTransform,
 	useElementScroll,
+	AnimatePresence,
 } from "framer-motion";
 import Select from "../ui/Select";
 import { useTheme } from "@emotion/react";
@@ -30,9 +31,22 @@ import Stepper from "../components/Stepper";
 import LinkButton from "../components/LinkButton";
 import Form from "../components/Form";
 import * as Yup from "yup";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TextAreaField from "../ui/TextAreaField";
 import SchedulerField from "../ui/SchedulerField";
+import * as actionCategories from "../../store/actions/category";
+import * as actionPrestations from "../../store/actions/prestation";
+import * as actionHoraires from "../../store/actions/horaire";
+import * as actionTarifs from "../../store/actions/tarif";
+import StepContainer from "./StepContainer";
+import Header from "./Header";
+import useFetchCatgoriesTypes from "../../hooks/useFetchPrestationsOptions";
+import useFetchPrestationsOptions from "../../hooks/useFetchPrestationsOptions";
+import PriceEdit from "./PriceEdit";
+import RadioGroupComponent from "../ui/RadioGroupComponent";
+import TextField from "../ui/TextField";
+import ImageProfileField from "../../Authentication/components/form/ImageProfileField";
+import ImageField from "../ui/ImageField";
 
 const variantsMain = {
 	open: { width: "60%" },
@@ -98,47 +112,7 @@ const Section = styled("section")(({ theme }) => ({
 	alignItems: "center",
 	// backgroundColor: "blue",
 }));
-const StepContainer = styled((props) => {
-	return (
-		<motion.div
-			variants={variantsStepContainer}
-			{...props}
-		/>
-	);
-})(() => ({
-	width: "100%",
-	display: "flex",
-	flexDirection: "column",
-	justifyContent: "center",
-	minHeight: "100vh",
-	// backgroundColor: "orange",
-}));
-const StepActionContainer = styled("div")(({ theme }) => ({
-	display: "flex",
-	justifyContent: "space-between",
-	flexDirection: "row",
-}));
-const ButtonAction = styled((props) => (
-	<Button
-		fullWidth={false}
-		{...props}
-	/>
-))(({ theme }) => ({
-	borderRadius: 5,
-	padding: theme.spacing(1.5, 3),
-}));
 
-const Step = () => {};
-const SectionAside = styled("section")(({ theme }) => ({
-	width: "100%",
-	height: "100vh",
-	border: "solid 2px #ff9900",
-	backgroundColor: "red",
-	scrollSnapAlign: "center",
-	position: "fluid",
-	top: 0,
-	left: 0,
-}));
 const squareVariants = {
 	onscreen: { opacity: 1, transition: { duration: 2 } },
 	offscreen: { opacity: 0 },
@@ -203,132 +177,88 @@ const CardWrapper = styled(
 	alignItems: "center",
 	justifyContent: "center",
 }));
-const sports = [
-	{
-		value: "1",
-		label: "Skateboard",
-	},
-	{
-		value: "2",
-		label: "Break Dance",
-	},
-	{
-		value: "3",
-		label: "Moto Cross",
-	},
-	{
-		value: "4",
-		label: "Surf",
-	},
-	{
-		value: "4",
-		label: "Kite Surf",
-	},
-	{
-		value: "4",
-		label: "Voile",
-	},
-];
-const types = [
-	{
-		value: "1",
-		label: "Collectif",
-	},
-	{
-		value: "2",
-		label: "particulier",
-	},
-	{
-		value: "3",
-		label: "stage",
-	},
-];
-const fields = [
-	{
-		id: "1",
-		name: "sports",
-		label: "Votre Sport",
-		desc: "Enseignez et partagez votre savoir, cliquer sur votre sports",
-		input: () => (
-			<Select
-				sx={{ alignSelf: "strecth" }}
-				name={"sport"}
-				label={"Sports"}
-				data={sports}
-				fullWidth
-			/>
-		),
-	},
-	{
-		id: "2",
-		label: "Name",
-		desc: "Un nom pour votre cours",
-		input: () => (
-			<Select
-				sx={{ alignSelf: "strecth" }}
-				name={"type"}
-				label={"Types"}
-				data={types}
-				fullWidth
-			/>
-		),
-	},
-	{
-		id: "3",
-		label: "Format de cours",
-		desc: "Choisissez le format qui vous correspond",
-		input: () => (
-			<Select
-				sx={{ alignSelf: "strecth" }}
-				name={"sport"}
-				label={"Sport"}
-				data={formats}
-				fullWidth
-			/>
-		),
-	},
-	{
-		id: "4",
-		label: "tarif horaire",
-		desc: "Fixez votre tarif ideal, pour etre plus attractive",
-		input: () => (
-			<SliderField
-				min={0}
-				max={30}
-				name={`price`}
-				label={"price"}
-				autoComplete={"price"}
-				autoFocus
-			/>
-		),
-	},
-];
+const ButtonAction = styled((props) => (
+	<Button
+		fullWidth={false}
+		{...props}
+	/>
+))(({ theme }) => ({
+	borderRadius: 5,
+	padding: theme.spacing(1.5, 3),
+}));
+// const fields = [
+// 	{
+// 		id: "1",
+// 		name: "sports",
+// 		label: "Votre Sport",
+// 		desc: "Enseignez et partagez votre savoir, cliquer sur votre sports",
+// 		input: () => (
+// 			<Select
+// 				sx={{ alignSelf: "strecth" }}
+// 				name={"sport"}
+// 				label={"Sports"}
+// 				data={sports}
+// 				fullWidth
+// 			/>
+// 		),
+// 	},
+// 	{
+// 		id: "2",
+// 		label: "Name",
+// 		desc: "Un nom pour votre cours",
+// 		input: () => (
+// 			<Select
+// 				sx={{ alignSelf: "strecth" }}
+// 				name={"type"}
+// 				label={"Types"}
+// 				data={types}
+// 				fullWidth
+// 			/>
+// 		),
+// 	},
+// 	{
+// 		id: "3",
+// 		label: "Format de cours",
+// 		desc: "Choisissez le format qui vous correspond",
+// 		input: () => (
+// 			<Select
+// 				sx={{ alignSelf: "strecth" }}
+// 				name={"sport"}
+// 				label={"Sport"}
+// 				data={formats}
+// 				fullWidth
+// 			/>
+// 		),
+// 	},
+// 	{
+// 		id: "4",
+// 		label: "tarif horaire",
+// 		desc: "Fixez votre tarif ideal, pour etre plus attractive",
+// 		input: () => (
+// 			<SliderField
+// 				min={0}
+// 				max={30}
+// 				name={`price`}
+// 				label={"price"}
+// 				autoComplete={"price"}
+// 				autoFocus
+// 			/>
+// 		),
+// 	},
+// ];
 const STEPS = [
 	[
 		{
 			id: 1,
-			name: "sport",
-			label: "Choisir une discipline sportive",
-			description: "Selectectionner dans le menu la sport enseigné",
-			stepLabel: "Choix du sport",
-			input: () => (
-				<>
-					<Select
-						sx={{ alignSelf: "strecth" }}
-						name={"sport"}
-						label={"Sport"}
-						data={sports}
-						fullWidth
-					/>
-					<LinkButton />
-				</>
-			),
-			validationSchema: Yup.object({
-				sport: Yup.number("sport non selectionner").required(
-					"selectionnez votre sport"
-				),
-			}),
+			name: "image",
+			label: "Uploader une image",
+			description: "cette image illustrera ce service",
+			stepLabel: "Image non obligatoire",
+			inputType: "image",
+			onSubmit: null,
+			validationSchema: Yup.object({}),
 		},
+
 		{
 			id: 2,
 			name: "type",
@@ -336,18 +266,8 @@ const STEPS = [
 			description:
 				"Selectectionner dans le menu ci dessous le votre type de service",
 			stepLabel: "Type de Prestation",
-			input: () => (
-				<>
-					<Select
-						sx={{ alignSelf: "strecth" }}
-						name={"type"}
-						label={"Types"}
-						data={types}
-						fullWidth
-					/>
-					<LinkButton />
-				</>
-			),
+			inputType: "select",
+			onSubmit: null,
 			validationSchema: Yup.object({
 				type: Yup.number("type non selectionner").required(
 					"selectionnez votre type de service"
@@ -356,19 +276,28 @@ const STEPS = [
 		},
 		{
 			id: 3,
+			name: "sport",
+			label: "Choisir une discipline sportive",
+			description: "Selectectionner dans le menu la sport enseigné",
+			stepLabel: "Choix du sport",
+			inputType: "select",
+			onSubmit: null,
+			validationSchema: Yup.object({
+				sport: Yup.number("sport non selectionner").required(
+					"selectionnez votre sport"
+				),
+			}),
+		},
+
+		{
+			id: 4,
 			name: "description",
 			label: "Description de votre prestation",
 			description:
 				"ce texte sera destiné a informé vos clients et utilisateur de l aplication",
 			stepLabel: "description",
-			input: () => (
-				<TextAreaField
-					sx={{ alignSelf: "strecth" }}
-					name={"description"}
-					label={"Description"}
-					fullWidth
-				/>
-			),
+			inputType: "textArea",
+			onSubmit: actionPrestations.createPrestation,
 			validationSchema: Yup.object({
 				type: Yup.number("type non selectionner").required(
 					"selectionnez votre type de service"
@@ -379,55 +308,121 @@ const STEPS = [
 	[
 		{
 			id: 0,
-			name: "description",
+			name: "horaires",
 			label: "",
 			description: "",
 			stepLabel: "description",
-			input: () => <SchedulerField name={"horaires"} />,
+			inputType: "schedulerField",
+			fullWidth: true,
+			onSubmit: actionHoraires.createHoraire,
+			//input: () => <SchedulerField name={"horaires"} />,
 			validationSchema: Yup.object({}),
 		},
 	],
+	[
+		{
+			id: 0,
+			name: "tarifs",
+			fieldName: "tarifs",
+			label: "Choisir le type de tarif",
+			description:
+				"Deux type de tarifs vous sont proposés: forfait de plusieurs entrées ou par abonnements",
+			stepLabel: "Type de tarif",
+			inputType: "radioGroup",
+			//input: () => <SchedulerField name={"horaires"} />,
+			validationSchema: Yup.object({
+				// tarif: Yup.array().max(1).required("ola"),
+				// credits: Yup.number().when("tarif", {
+				// 	is: (value) => {
+				// 		return Number(value[0].type) === 2;
+				// 	},
+				// 	then: Yup.number().required("Entrez le nombre d'entrées!"),
+				// 	otherwise: Yup.number().notRequired(),
+				// }),
+				// souscription: Yup.number().when("tarif", {
+				// 	is: (value) => {
+				// 		return Number(value[0].type) === 3;
+				// 	},
+				// 	then: Yup.number().required("Choisir frequence de payments"),
+				// 	otherwise: Yup.number().notRequired(),
+				// }),
+				// credits: Yup.number().ensure().when("tarif[0].type", {
+				// 	is: "",
+				// 	then: Yup.number().required(),
+				// }),
+			}),
+		},
+		// {
+		// 	id: 2,
+		// 	name: "amount",
+		// 	label: "Tarif Horaire",
+		// 	description: "Faites glisser le curseur sur votre tarif horaire",
+		// 	stepLabel: "Tarif en euros",
+		// 	inputType: "slider",
+		// 	//input: () => <SchedulerField name={"horaires"} />,
+		// 	validationSchema: Yup.object({
+		// 		amount: Yup.number().test(
+		// 			"is-jimmy",
+		// 			"${path} is not Jimmy",
+		// 			(value, context) => Number(value) > 0
+		// 		),
+		// 	}),
+		// },
+		// {
+		// 	id: 3,
+		// 	name: "name_tarif",
+		// 	label: "Nom tarif",
+		// 	description:
+		// 		"Entrer le nom de votre tarif ex: (abonnement, group forfait...)",
+		// 	stepLabel: "Nommez votre tarif",
+		// 	inputType: "input",
+		// 	onSubmit: actionTarifs.createTarif,
+		// 	//input: () => <SchedulerField name={"horaires"} />,
+		// 	validationSchema: Yup.object({}),
+		// },
+	],
 ];
-export default () => {
-	const [step, setStep] = useState(0);
-	const [page, setPage] = useState(0);
-	const [isOpen, setIsOpen] = useState(true);
-	const { errors = null, values = null } = useSelector(
-		({ prestations }) => prestations.errors || {}
-	);
-	const { width } = useWindowDimensions();
-	// const { scrollYProgress } = useScroll();
-	const ref = useRef();
-	const { scrollY, scrollYProgress } = useElementScroll(ref);
-	// const refs = STEPS.map(() => useRef(null));
 
+export default () => {
+	const ref = useRef();
 	const refs = STEPS.reduce(
 		(p, c, index) => [...p, c.map((_) => useRef(null))],
 		[]
 	);
-	const theme = useTheme();
-	const colorStep = 1 / fields.length;
-	const backgorundInput = new Array(fields.length)
-		.fill(0)
-		.map((_, index) => index * colorStep);
+	const dispatch = useDispatch();
+	const options = useFetchPrestationsOptions();
+	const [step, setStep] = useState(0);
+	const [page, setPage] = useState(0);
+	const [isOpen, setIsOpen] = useState(true);
+	const { user } = useSelector(({ auth }) => auth);
+	const {
+		errors = null,
+		values = null,
+		submitForm = null,
+	} = useSelector(({ prestations }) => prestations.errors || {});
 
-	useEffect(() => {
-		console.log("relooooooooo");
-		console.log(errors);
-		// scrollYProgress.onChange((ee) => {
-		// 	console.log(ee);
-		// });
-		// console.log(scrollYProgress.get());
-	}, [errors]);
-	const background = useTransform(scrollYProgress, backgorundInput, [
-		`linear-gradient(180deg, ${theme.palette.primary.light}, rgba(19, 120, 236, 0.73)),url(${png})`,
-		`linear-gradient(180deg, ${theme.palette.primary.main}, rgba(42, 156, 255, 0.83)),url("${png}")`,
-		`linear-gradient(180deg, ${theme.palette.primary.light}, rgba(19, 120, 236, 0.73)),url(${png})`,
-		`linear-gradient(180deg, ${theme.palette.primary.light}, rgba(19, 120, 236, 0.93)),url(${png})`,
-		// `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
-		// "linear-gradient(180deg, rgb(230, 255, 0) 0%, rgb(3, 209, 0) 100%)",
-		// "linear-gradient(180deg, #ff008c 0%, rgb(211, 9, 225) 100%)",
-	]);
+	const prestationId = useSelector(
+		({ prestations }) => prestations.prestationId
+	);
+	const { scrollY, scrollYProgress } = useElementScroll(ref);
+
+	// const { categories: sports, types } = useSelector(({ prestations }) => ({
+	// 	categories: prestations.categories.map((c) => ({
+	// 		value: c.id,
+	// 		label: c.title,
+	// 	})),
+	// 	types: prestations.types.map((c) => ({ value: c.id, label: c.name })),
+	// }));
+	// const background = useTransform(scrollYProgress, backgorundInput, [
+	// 	`linear-gradient(180deg, ${theme.palette.primary.light}, rgba(19, 120, 236, 0.73)),url(${png})`,
+	// 	`linear-gradient(180deg, ${theme.palette.primary.main}, rgba(42, 156, 255, 0.83)),url("${png}")`,
+	// 	`linear-gradient(180deg, ${theme.palette.primary.light}, rgba(19, 120, 236, 0.73)),url(${png})`,
+	// 	`linear-gradient(180deg, ${theme.palette.primary.light}, rgba(19, 120, 236, 0.93)),url(${png})`,
+	// ]);
+	// const colorStep = 1 / fields.length;
+	// const backgorundInput = new Array(fields.length)
+	// 	.fill(0)
+	// 	.map((_, index) => index * colorStep);
 	const handleSubmit = () => {
 		console.log("declencheeur -----");
 		if (step < STEPS[page].length - 1 && STEPS[page].length > 1) {
@@ -438,19 +433,23 @@ export default () => {
 				block: "center",
 				inline: "start",
 			});
-		} else if (step === STEPS[page].length - 1 && STEPS.length > 1) {
-			setIsOpen(false);
+		} else if (step === STEPS[page].length - 1 && page < STEPS.length - 1) {
 			const new_step = 0;
 			const new_page = page + 1;
-			setPage(1);
+
+			setPage(new_page);
 			setStep(new_step);
-			refs[page][new_step].current.scrollIntoView({
+
+			if (STEPS[new_page][new_step].fullWidth) {
+				setIsOpen(false);
+			} else {
+				setIsOpen(true);
+			}
+			refs[new_page][new_step].current.scrollIntoView({
 				behavior: "smooth",
 				block: "center",
 				inline: "start",
 			});
-		} else {
-			childrens[step].props.onSubmit(values);
 		}
 
 		// if (step < STEPS[page].length - 1) {
@@ -463,93 +462,118 @@ export default () => {
 		// 	setStep(_step);
 		// }
 	};
+
 	const handlePrevious = () => {
 		if (step > 0) {
 			const _step = step - 1;
-			refs[0][_step].current.scrollIntoView({
+			refs[page][_step].current.scrollIntoView({
 				behavior: "smooth",
 				block: "center",
 				inline: "start",
 			});
 			setStep(_step);
+		} else if (step === 0 && page >= 1) {
+			const _page = page - 1;
+			const _step = 0;
+			if (!isOpen) setIsOpen(true);
+			console.log(_page + ":-----:" + _step);
+
+			setStep(_step);
+			setPage(_page);
 		}
 	};
-	const backgroundImage = "url(../../img/sport1.png)";
 
+	const renderInput = useCallback(
+		({ inputType, label, name: _name, fieldName }) => {
+			const opts_name = _name;
+			const name = fieldName || _name;
+			switch (inputType) {
+				case "image":
+					return (
+						<ImageField
+							{...{ label }}
+							{...{ name }}
+							id='image_prestation'
+						/>
+					);
+				case "textArea":
+					return (
+						<TextAreaField
+							sx={{ alignSelf: "strecth" }}
+							{...{ label }}
+							{...{ name }}
+							fullWidth
+						/>
+					);
+
+				case "select":
+					//const options = name == "sport" ? sports : types;
+					// if (name === "tarif")
+					// 	return (
+					// 		<PriceEdit
+					// 			{...{ label }}
+					// 			{...{ name }}
+					// 			options={options[name]}
+					// 		/>
+					// 	);
+					return (
+						<>
+							<Select
+								sx={{ alignSelf: "strecth" }}
+								{...{ label }}
+								{...{ name }}
+								data={options[opts_name]}
+								fullWidth
+							/>
+							<LinkButton />
+						</>
+					);
+				case "radioGroup":
+					return (
+						<RadioGroupComponent
+							{...{ label }}
+							{...{ name }}
+							options={options[opts_name]}
+						/>
+					);
+				case "schedulerField":
+					return (
+						<SchedulerField
+							{...{ label }}
+							{...{ name }}
+						/>
+					);
+				case "slider":
+					return (
+						<SliderField
+							min={0}
+							max={30}
+							{...{ name }}
+							{...{ label }}
+							autoComplete={label}
+							autoFocus
+						/>
+					);
+				case "input":
+					return (
+						<TextField
+							{...{ name }}
+							{...{ label }}
+						/>
+					);
+			}
+		},
+		[options]
+	);
+	const backgroundImage = "url(../../img/sport1.png)";
 	return (
 		<>
-			<Box
-				sx={{
-					zIndex: 1,
-					position: "fixed",
-					padding: "0 2rem",
-					top: 0,
-					width: "100%",
-					height: 100,
-					borderBottomRightRadius: 70,
-					backgroundColor: "primary.main",
-				}}>
-				<Box
-					sx={{
-						position: "relative",
-
-						display: "flex",
-						justifyContent: "space-between",
-						alignItems: "center",
-					}}>
-					<Button
-						sx={{
-							color: "background.light",
-
-							paddingLeft: 0,
-							width: "auto",
-						}}
-						variant='text'>
-						{step + 1} / {fields.length}
-					</Button>
-					<Button
-						sx={{
-							color: "background.light",
-
-							paddingLeft: 0,
-							width: "auto",
-						}}
-						variant='text'>
-						Skip
-					</Button>
-				</Box>
-				<Box
-					sx={{
-						position: "relative",
-						width: 1 / 1,
-						height: 5,
-						backgroundColor: "primary.light",
-					}}>
-					<Box
-						component={motion.div}
-						style={{ x: 0, scaleX: scrollYProgress }}
-						sx={{
-							height: "100%",
-							backgroundColor: "white",
-							transformOrigin: "top left",
-						}}></Box>
-				</Box>
-			</Box>
-			<Box
-				sx={{
-					zIndex: 1,
-					position: "fixed",
-					top: 100,
-					left: 0,
-					width: 70,
-					height: 70,
-				}}>
-				<Rounded
-					width={70}
-					height={70}
-					backgroundColor={theme.palette.primary.main}
-				/>
-			</Box>
+			<Header
+				steps={STEPS}
+				{...{ page }}
+				{...{ step }}
+				{...{ scrollYProgress }}
+			/>
 
 			<Layout ref={ref}>
 				<Container>
@@ -559,7 +583,7 @@ export default () => {
 						<Form
 							step={step}
 							page={page}
-							initialValues={{ price: 0 }}
+							initialValues={{ price: 0, tarifs: [] }}
 							{...{ setPage }}
 							{...{ setStep }}>
 							{/* <SchedulerField name={"horaires"} /> */}
@@ -573,8 +597,25 @@ export default () => {
 												validationSchema={item.validationSchema}
 												onSubmit={(values) => {
 													handleSubmit();
+													// if (item.onSubmit) {
+													// 	dispatch(
+													// 		item.onSubmit(
+													// 			{ ...values, prestationId, user },
+													// 			() => handleSubmit()
+													// 		)
+													// 	);
+													// } else {
+													// 	handleSubmit();
+													// }
 												}}>
-												<StepContainer animate={isOpen ? "open" : "closed"}>
+												<StepContainer
+													variants={variantsStepContainer}
+													item={item}
+													{...{ isOpen }}
+													{...{ handlePrevious }}>
+													{renderInput({ ...item })}
+												</StepContainer>
+												{/* <StepContainer animate={isOpen ? "open" : "closed"}>
 													<Stack spacing={5}>
 														<span>
 															<Typography
@@ -587,7 +628,7 @@ export default () => {
 																{item.description}
 															</Typography>
 														</span>
-														{item.input()}
+														
 
 														<StepActionContainer>
 															<ButtonAction
@@ -603,7 +644,7 @@ export default () => {
 															</ButtonAction>
 														</StepActionContainer>
 													</Stack>
-												</StepContainer>
+												</StepContainer> */}
 											</Section>
 										))}
 									</div>
@@ -723,14 +764,49 @@ export default () => {
 					<Aside
 						animate={isOpen ? "open" : "closed"}
 						variants={variantsAside}>
-						<Stepper
-							y={scrollY}
-							steps={STEPS[0]}
-							errors={errors}
-							values={values}
-						/>
+						<AnimatePresence exitBeforeEnter>
+							{STEPS.map((steps, i) => {
+								return (
+									i === page && (
+										<Stepper
+											key={i}
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											y={scrollY}
+											{...{ steps }}
+											errors={errors}
+											values={values}
+										/>
+									)
+								);
+							})}
+						</AnimatePresence>
 					</Aside>
 				</Container>
+				<Box
+					sx={{
+						position: "fixed",
+						bottom: 0,
+						left: 0,
+						width: "100vw",
+						display: "flex",
+						justifyContent: "center",
+						padding: 3,
+					}}>
+					<ButtonAction
+						onClick={handlePrevious}
+						variant='outlined'
+						sx={{ padding: 2 }}>
+						Retour
+					</ButtonAction>
+					<ButtonAction
+						onClick={submitForm}
+						variant='contained'
+						sx={{ padding: 2, margin: "0 10px" }}>
+						Suivant
+					</ButtonAction>
+				</Box>
 			</Layout>
 
 			{/* <SliderField

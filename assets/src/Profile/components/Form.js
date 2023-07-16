@@ -12,15 +12,14 @@ import * as actions from "../../store/actions/prestation";
 import { slideIn as variants } from "../variants";
 
 const ErrorProvider = () => {
-	const { errors, values, touched } = useFormikContext();
+	const { errors, values, touched, submitForm } = useFormikContext();
 	const dispatch = useDispatch();
 	useEffect(() => {
-		console.log("values");
-		console.log(values);
-		console.log("touched");
-		console.log(touched);
-
-		dispatch(actions.sendErrors({ errors, touched, values }));
+		// console.log("values");
+		// console.log(values);
+		// console.log("touched");
+		// console.log(touched);
+		dispatch(actions.sendErrors({ errors, touched, values, submitForm }));
 	}, [errors, touched, values]);
 	return null;
 };
@@ -36,12 +35,6 @@ export default ({ children, step = 0, page = 0, ...props }) => {
 
 	// const step = childrens[0];
 
-	useEffect(() => {
-		console.log(
-			"------------FORM PROPS validation page/step" + page + "/" + step
-		);
-		console.log(pages);
-	});
 	const validationSchema =
 		pages[page].props.children[step]?.props.validationSchema || {};
 	return (

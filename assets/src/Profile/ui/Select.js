@@ -37,6 +37,7 @@ export default (props) => {
 	const { label, data, ...rest } = props;
 	const [field, meta] = useField(props);
 	const { value: selectedValue } = field;
+
 	const [touched, error, initialTouched] = at(
 		meta,
 		"touched",
@@ -72,7 +73,7 @@ export default (props) => {
 		// }
 	};
 	return (
-		<Box>
+		<Box flex={1}>
 			<FormControl
 				// variant='standard'
 				{...rest}

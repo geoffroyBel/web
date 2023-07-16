@@ -28,6 +28,7 @@ import { Sports } from "../Home/Sports/Sports";
 import FavoriteSports from "../Home/FavoritesSports";
 import Drawer from "../Home/Drawer";
 import SportDetail from "../Home/Sports/SportDetail";
+import Reservation from "../Home/Reservations";
 
 const App = () => {
 	const location = useLocation();
@@ -41,8 +42,7 @@ const App = () => {
 				key={location.pathname}>
 				<Route
 					path='/'
-					// element={<AuthProvider {...{ location }} />}
-				>
+					element={<AuthProvider {...{ location }} />}>
 					{/* <Route
 						path='/home'
 						element={<Landing />}
@@ -70,6 +70,10 @@ const App = () => {
 						<Route
 							path='favorites'
 							element={<FavoriteSports />}
+						/>
+						<Route
+							path='reservation'
+							element={<Reservation />}
 						/>
 					</Route>
 					<Route

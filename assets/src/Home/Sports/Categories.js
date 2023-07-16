@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { styled } from "@mui/material/styles";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
+import { useDispatch, useSelector } from "react-redux";
+import * as actionCategories from "../../store/actions/category";
 
 const categories = [
 	{ id: "1", title: "skate", color: "#FFE8E0" },
@@ -13,7 +15,13 @@ const categories = [
 	{ id: "4", title: "break dance", color: "#F1E0FF" },
 	{ id: "5", title: "skate", color: "#FFE8E9" },
 ];
-
+const Colors = [
+	{ color: "#FFE8E0" },
+	{ color: "#F1E0FF" },
+	{ color: "#BFEAF5" },
+	{ color: "#F1E0FF" },
+	{ color: "#FFE8E9" },
+];
 const StyledTabs = styled((props) => (
 	<Tabs
 		{...props}
@@ -56,15 +64,24 @@ const StyledTab = styled((props) => (
 	},
 }));
 
-export default function Categories({ iconSize = 50 }) {
+export default function Categories({ iconSize = 50, handleSelect }) {
 	const { width } = useWindowDimensions();
-	const [value, setValue] = React.useState(0);
+	const [value, setValue] = React.useState();
+	const categories = useSelector(({ prestations }) =>
+		prestations.categories.sort((a, b) => Number(a.id) - Number(b.id))
+	);
+	const dispatch = useDispatch();
 	const isOverlap = width < categories.length * (iconSize + 20);
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
+		alert(categories[newValue].id);
+		handleSelect(categories[newValue]);
 	};
 
+	useEffect(() => {
+		dispatch(actionCategories.fetchCategories());
+	}, []);
 	return (
 		<Box sx={{ width: "100%", zIndex: 99 }}>
 			<StyledTabs
@@ -74,7 +91,7 @@ export default function Categories({ iconSize = 50 }) {
 				variant={isOverlap ? "scrollable" : "standard"}
 				indicatorColor='#FF9900'
 				centered={isOverlap ? false : true}>
-				{categories.map((category) => (
+				{categories.map((category, index) => (
 					<StyledTab
 						key={category.id}
 						icon={
@@ -82,8 +99,7 @@ export default function Categories({ iconSize = 50 }) {
 								sx={{
 									width: 50,
 									height: 50,
-
-									backgroundColor: category.color,
+									backgroundColor: Colors[index].color,
 									borderRadius: "50%",
 								}}
 							/>

@@ -45,7 +45,7 @@ class PrestationRepository extends ServiceEntityRepository
         ->where("p.id IN(:ids)")
         ->setParameter('ids', array_values($ids))
         // ->orderBy('s.id','DESC')
-        ->setMaxResults(15)
+        // ->setMaxResults(15)
         ->getQuery()
             ->getResult();
     }

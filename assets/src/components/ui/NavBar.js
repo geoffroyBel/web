@@ -1,15 +1,22 @@
-import React, { useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import PresentToAllIcon from "@mui/icons-material/PresentToAll";
-import MenuContext from "../../context/MenuContext";
+import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import MenuContext from "../../context/MenuContext";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+const settings = ["Profile", "Account", "Dashboard", "Logout"];
+import * as actionsAuth from "../../store/actions/auth";
 export default function NavBar({
 	position = "relative",
 	title = "My Profile",
@@ -18,6 +25,27 @@ export default function NavBar({
 	iconLeft = <HighlightOffIcon />,
 	iconRight = <PresentToAllIcon />,
 }) {
+	// const [auth, setAuth] = React.useState(true);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const [anchorEl, setAnchorEl] = React.useState(null);
+	const { user } = useSelector(({ auth }) => auth);
+
+	const handleChange = (event) => {
+		setAuth(event.target.checked);
+	};
+
+	const handleMenu = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleClose = (index) => {
+		setAnchorEl(null);
+		if (index === settings.length - 1) {
+			dispatch(actionsAuth.signOut(() => navigate("/login")));
+		}
+	};
+
 	async function fetchMoviesJSON() {
 		const response = await fetch("jsonplaceholder.typicode.com/posts");
 		const movies = await response.json();
@@ -88,6 +116,49 @@ export default function NavBar({
 						aria-label='menu'>
 						{iconRight}
 					</IconButton>
+					<div>
+						<IconButton
+							size='large'
+							aria-label='account of current user'
+							aria-controls='menu-appbar'
+							aria-haspopup='true'
+							onClick={handleMenu}
+							sx={{
+								marginRight: 1,
+								boxShadow: "0px 0px 1px gray",
+								color,
+							}}>
+							<AccountCircle />
+						</IconButton>
+						<Menu
+							id='menu-appbar'
+							anchorEl={anchorEl}
+							anchorOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							keepMounted
+							transformOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							open={Boolean(anchorEl)}
+							onClose={handleClose}>
+							{settings.map((setting, index) => {
+								let link = setting;
+								if (index === settings.length - 1 && !user) {
+									link = "Login";
+								}
+								return (
+									<MenuItem
+										key={setting}
+										onClick={() => handleClose(index)}>
+										<Typography textAlign='center'>{link}</Typography>
+									</MenuItem>
+								);
+							})}
+						</Menu>
+					</div>
 				</Toolbar>
 			</AppBar>
 		</Box>

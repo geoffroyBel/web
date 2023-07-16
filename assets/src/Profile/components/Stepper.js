@@ -8,14 +8,17 @@ import { connect, getIn } from "formik";
 
 const SEGMENT_HEIGHT = 50;
 const ICON_SIZE = 30;
-const Container = styled("div")(({ theme, width = 200, height = 200 }) => ({
-	// backgroundColor: "orange",
-	display: "flex",
-	flexDirection: "column",
-	justifyContent: "center",
-	alignContent: "center",
-	height: "100vh",
-}));
+const Container = styled(motion.div)(
+	({ theme, width = 200, height = 200 }) => ({
+		// backgroundColor: "orange",
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "center",
+		alignContent: "center",
+
+		height: "100vh",
+	})
+);
 const VerticalLine = styled("span")(({ theme }) => ({
 	width: 0.5,
 	height: "100%",
@@ -30,7 +33,6 @@ const Segment = styled("div")(({ theme, height, width }) => ({
 }));
 
 const Stepper = ({ steps, y, errors, values, ...rest }) => {
-	console.log({ ...rest });
 	const theme = useTheme();
 	const { width, height } = useWindowDimensions();
 
@@ -41,12 +43,12 @@ const Stepper = ({ steps, y, errors, values, ...rest }) => {
 	// };
 	useEffect(() => {
 		console.log("stepppppppppeeeeeer");
-		console.log(steps);
+		console.log(values);
 		console.log(errors);
-	}, [errors]);
+	}, [errors, values]);
 
 	return (
-		<Container>
+		<Container {...rest}>
 			{steps.map((step, i) => {
 				// const input = [(i + 1) * -height, i * -height, (i - 1) * -height];
 				const input = [(i - 1) * height, i * height, (i + 1) * height];

@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     // mercure: 'object.getMercureOptions()',
    // mercure: ["private" => true],
-   attributes:["pagination_items_per_page" => 5 ],
+   //attributes:["pagination_items_per_page" => 5 ],
     collectionOperations: [
         "post" => ["security" => "is_granted('ROLE_COMPANY')"],
         "get" => [
@@ -35,25 +35,28 @@ use Symfony\Component\Serializer\Annotation\Groups;
         "put" => ["security" => "is_granted('ROLE_ADMIN') or ( is_granted('ROLE_COMPANY') and object.getCompany().getOwner() == user )"],
     ]
     ),
-    // ApiFilter(
-    //     SearchFilter::class,
-    //     properties: [
-    //         'name' => SearchFilter::STRATEGY_PARTIAL,
-    //         ''
-    //     ]
-    // )
+   
+    ApiFilter(
+        SearchFilter::class,
+        properties:["categories.id"=> "exact", "id"=> "exact"]
+        // properties: [
+        //     'name' => SearchFilter::STRATEGY_PARTIAL,
+        //     ''
+        // ]
+    )
     ]
- #[ApiFilter(SearchPrestationFilter::class)]
+#[ApiFilter(SearchFilter::class, properties:["id"=> "exact", "categories.id"=> "exact"])]
+ //#[ApiFilter(SearchPrestationFilter::class)]
 class Prestation implements AuthoredEntityInterface, CompanyInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups(["get_prestation", "get_user", "list_prestation"])]
+    #[Groups(["get_prestation", "get_user", "list_prestation", "post-reservation", "list-reservation"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["get_prestation", "list_prestation"])]
+    #[Groups(["get_prestation", "list_prestation", "list-reservation"])]
     private ?string $name = null;
 
     // #[ORM\OneToMany(mappedBy: 'prestation', targetEntity: Horaire::class, cascade: ["persist", "remove"])]
@@ -61,8 +64,8 @@ class Prestation implements AuthoredEntityInterface, CompanyInterface
     // #[Groups(["get_prestation"])]
     // private Collection $horaires;
 
-    // #[ORM\OneToMany(mappedBy: 'prestation', targetEntity: Reservation::class)]
-    // private Collection $reservations;
+    #[ORM\OneToMany(mappedBy: 'prestation', targetEntity: Reservation::class)]
+    private Collection $reservations;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(["get_prestation"])]
@@ -99,12 +102,16 @@ class Prestation implements AuthoredEntityInterface, CompanyInterface
     private ?string $description = null;
 
     #[ORM\OneToMany(mappedBy: 'prestation', targetEntity: Image::class)]
-    #[Groups(["get_prestation", "list_prestation"])]
+    #[Groups(["get_prestation", "list_prestation","list-reservation"])]
     #[ApiSubresource]
     private Collection $images;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $productID = null;
+
+    #[Groups(["get_prestation", "list_prestation"])]
+    #[ORM\ManyToOne(inversedBy: 'prestations')]
+    private ?Type $type = null;
 
 
 
@@ -182,35 +189,35 @@ class Prestation implements AuthoredEntityInterface, CompanyInterface
     //     return $this;
     // }
 
-    // /**
-    //  * @return Collection<int, Reservation>
-    //  */
-    // public function getReservations(): Collection
-    // {
-    //     return $this->reservations;
-    // }
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
 
-    // public function addReservation(Reservation $reservation): self
-    // {
-    //     if (!$this->reservations->contains($reservation)) {
-    //         $this->reservations[] = $reservation;
-    //         $reservation->setPrestation($this);
-    //     }
+    public function addReservation(Reservation $reservation): self
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations[] = $reservation;
+            $reservation->setPrestation($this);
+        }
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
-    // public function removeReservation(Reservation $reservation): self
-    // {
-    //     if ($this->reservations->removeElement($reservation)) {
-    //         // set the owning side to null (unless already changed)
-    //         if ($reservation->getPrestation() === $this) {
-    //             $reservation->setPrestation(null);
-    //         }
-    //     }
+    public function removeReservation(Reservation $reservation): self
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getPrestation() === $this) {
+                $reservation->setPrestation(null);
+            }
+        }
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
     public function getCreated(): ?\DateTimeInterface
     {
@@ -444,6 +451,18 @@ class Prestation implements AuthoredEntityInterface, CompanyInterface
     public function setProductID(?string $productID): self
     {
         $this->productID = $productID;
+
+        return $this;
+    }
+
+    public function getType(): ?Type
+    {
+        return $this->type;
+    }
+
+    public function setType(?Type $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

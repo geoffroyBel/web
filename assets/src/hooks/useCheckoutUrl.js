@@ -12,13 +12,16 @@ const useCheckoutUrl = () => {
 		}
 	}, [checkoutUrl]);
 
-	const createCheckout = useCallback(() => {
-		if (checkoutUrl) {
-			window.location = checkoutUrl;
-		} else {
-			dispatch(actions.createAbonnement());
-		}
-	}, [checkoutUrl]);
+	const createCheckout = useCallback(
+		(prestationId, tarifId) => {
+			if (checkoutUrl) {
+				window.location = checkoutUrl;
+			} else {
+				dispatch(actions.createAbonnement(prestationId, tarifId));
+			}
+		},
+		[checkoutUrl]
+	);
 
 	return [createCheckout];
 };

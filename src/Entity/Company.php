@@ -56,7 +56,7 @@ class Company implements AuthoredEntityInterface
     private ?string $name = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(["get-stripe-account"])]
+    #[Groups(["get-stripe-account", "list_prestation"])]
     // #[Blank(groups: ["put-stripe-account"])]
     private ?string $accountID = null;
 
@@ -64,6 +64,7 @@ class Company implements AuthoredEntityInterface
     #[Groups(["get-stripe-account"])]
     private ?string $accountLink = null;
 
+    #[Groups(["list_prestation"])]
     #[ORM\OneToOne(inversedBy: 'company', cascade: ['persist', 'remove'])]
     private ?User $owner= null;
     // #[ORM\OneToOne(mappedBy: 'company', cascade: ['persist', 'remove'])]

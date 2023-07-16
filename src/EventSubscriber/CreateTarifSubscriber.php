@@ -55,7 +55,7 @@ class CreateTarifSubscriber implements EventSubscriberInterface
         $productId = $entity->getPrestation()->getProductID();
         $accountId = $user->getCompany()->getAccountID();
 
-        $price = $this->stripe->createPrice($productId, $accountId, []);
+        $price = $this->stripe->createPrice($productId, $accountId, $entity->getType(), $entity->getPrice());
         $entity->setPriceId($price->id);
     }
 }

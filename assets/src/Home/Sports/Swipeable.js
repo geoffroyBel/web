@@ -46,7 +46,14 @@ export const snapPoint = (velocity, points) => {
 };
 export default forwardRef(
 	(
-		{ position = useMotionValue(0), onSwipe, index, item = null, parent_scale },
+		{
+			position = useMotionValue(0),
+			onSwipe,
+			index,
+			item = null,
+			parent_scale,
+			user = null,
+		},
 		ref
 	) => {
 		const theme = useTheme();
@@ -143,9 +150,13 @@ export default forwardRef(
 		// 	});
 		// }, []);
 		let url = "/static/images/cards/contemplative-reptile.jpg";
+		const sport = item?.categories[0]?.title || "Sport";
+		const type = item?.type;
+		const teacher = item?.company.owner.username;
 		if (item && item.images[0]) {
 			url = item.images[0].url;
 		}
+		console.log(item);
 		return (
 			<Box
 				component={motion.div}
@@ -198,6 +209,16 @@ export default forwardRef(
 					y={_y}
 					{...{ backgroundColor }}
 					item={item}
+					username={teacher}
+					title={`${type} de ${sport}`}
+					description={item?.description}
+					checkoutParams={{
+						stripeAccount: item?.company.accountID || "acct_1ND4oDRWUG83XLum",
+						mode: "payment",
+						prestationId: item?.id || null,
+						userID: user?.id || 1,
+						tarifId: 40,
+					}}
 					onSave={swipe}
 					{...{ width }}
 					{...{ height }}

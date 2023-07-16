@@ -1,5 +1,5 @@
 import User from "../../models/User";
-import { SIGN_IN, FETCH_USER, SIGN_UP } from "../types";
+import { SIGN_IN, FETCH_USER, SIGN_UP, SIGN_OUT } from "../types";
 
 const initialStates = {
 	error: null,
@@ -18,6 +18,13 @@ export default (state = initialStates, action) => {
 				...action.payload,
 				error: null,
 				loading: false,
+			};
+		case SIGN_OUT:
+			return {
+				...state,
+				error: null,
+				token: null,
+				user: null,
 			};
 		case FETCH_USER:
 		case SIGN_UP:

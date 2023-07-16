@@ -120,7 +120,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $prestations;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(["get-owner", "post"])]
+    #[Groups(["get-owner", "post", "list_prestation"])]
     private ?string $username = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -151,17 +151,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     // #[ORM\OneToMany(mappedBy: 'user', cascade:['remove'], targetEntity: Image::class)]
     // private Collection $images;
-
+   
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Abonnement::class)]
+    #[Groups(["get-owner"])]
     private Collection $abonnements;
 
+    #[Groups(["get-owner"])]
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Reservation::class)]
     private Collection $reservations;
 
   
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
-    #[Groups(["get-owner"])]
+
     private ?Cart $cart = null;
+
+    #[Groups(["list_prestation"])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $picture = null;
 
 
     public function __construct()
@@ -525,6 +531,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->cart = $cart;
+
+        return $this;
+    }
+
+    public function getPicture(): ?string
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(?string $picture): self
+    {
+        $this->picture = $picture;
 
         return $this;
     }

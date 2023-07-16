@@ -16,10 +16,10 @@ const IconContainer = styled("div")(({ theme, width }) => ({
 	margin: theme.spacing(0, 1),
 }));
 
-const LinkButton = () => {
+const LinkButton = ({ label = "Ajouter discipline", ...rest }) => {
 	const theme = useTheme();
 	return (
-		<ButtonBase>
+		<ButtonBase {...rest}>
 			<Typography
 				sx={{
 					color: theme.palette.primary.main,
@@ -27,7 +27,7 @@ const LinkButton = () => {
 					textAlign: "right",
 				}}
 				variant='body'>
-				Ajouter discipline
+				{label}
 			</Typography>
 			<IconContainer width={20}>
 				<PlusIcon
