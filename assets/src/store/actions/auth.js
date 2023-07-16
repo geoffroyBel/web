@@ -81,6 +81,7 @@ export const tryLocalSignin =
 			}
 		} else {
 			console.log("go to sign in");
+			fail();
 		}
 
 		// if (token) {
