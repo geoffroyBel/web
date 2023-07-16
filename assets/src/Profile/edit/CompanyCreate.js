@@ -47,6 +47,7 @@ import RadioGroupComponent from "../ui/RadioGroupComponent";
 import TextField from "../ui/TextField";
 import ImageProfileField from "../../Authentication/components/form/ImageProfileField";
 import ImageField from "../ui/ImageField";
+import { useNavigate } from "react-router-dom";
 
 const variantsMain = {
 	open: { width: "60%" },
@@ -384,6 +385,7 @@ const STEPS = [
 ];
 
 export default () => {
+	const navigate = useNavigate();
 	const ref = useRef();
 	const refs = STEPS.reduce(
 		(p, c, index) => [...p, c.map((_) => useRef(null))],
@@ -605,6 +607,12 @@ export default () => {
 															)
 														);
 													} else {
+														if (
+															j == STEPS.length - 1 &&
+															index === STEPS[j].length - 1
+														) {
+															navigate(`/home/sports/detail/${prestationId}`);
+														}
 														handleSubmit();
 													}
 												}}>

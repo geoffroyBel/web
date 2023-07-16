@@ -215,9 +215,9 @@ export default forwardRef(
 					checkoutParams={{
 						stripeAccount: item?.company.accountID || "acct_1ND4oDRWUG83XLum",
 						mode: "payment",
-						prestationId: item?.id || null,
-						userID: user?.id || 1,
-						tarifId: 40,
+						prestationId: 194, //item?.id || null,
+						userID: user?.id || 14,
+						tarifId: 324,
 					}}
 					onSave={swipe}
 					{...{ width }}
