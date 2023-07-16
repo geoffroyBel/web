@@ -22,7 +22,8 @@ export const createPrestation =
 			categories: [`/api/categories/${values.sport}`],
 		};
 		const { image = null, user = null } = values;
-
+		console.log("createPrestation");
+		console.log(values);
 		try {
 			const { data } = await api.post(`/prestations`, body, config);
 			if (image) {
@@ -36,7 +37,7 @@ export const createPrestation =
 					prestation: `/api/prestations/${data.id}`,
 				});
 			}
-			console.log("----------CREATE");
+
 			console.log(data);
 			dispatch({
 				type: CREATE_PRESTATION,
@@ -46,6 +47,7 @@ export const createPrestation =
 			completion();
 			//dispatch({ type: FETCH_PRESTATIONS, payload: data["hydra:member"] });
 		} catch (error) {
+			console.log("");
 			console.log(error);
 			dispatch({ type: ERROR_CREATE_PRESTATION, payload: error.response });
 		}
