@@ -15,7 +15,7 @@ import Menu from "@mui/material/Menu";
 import MenuContext from "../../context/MenuContext";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-const settings = ["Profile", "Account", "Logout"];
+const settings = ["Profile", "Logout"];
 import * as actionsAuth from "../../store/actions/auth";
 export default function NavBar({
 	position = "relative",
@@ -43,8 +43,8 @@ export default function NavBar({
 		setAnchorEl(null);
 		if (index === settings.length - 1) {
 			dispatch(actionsAuth.signOut(() => navigate("/login")));
-		} else if (index === 1) {
-			navigate("profile/edit");
+		} else if (index === 0) {
+			navigate("/profile/edit");
 		}
 	};
 

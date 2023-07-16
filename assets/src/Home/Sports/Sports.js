@@ -47,7 +47,6 @@ export const Sports = () => {
 	const parent_scale = useMotionValue(0);
 
 	useEffect(() => {
-		alert(currentPage);
 		dispatch(actions.fetchPrestations(currentPage));
 	}, [currentPage]);
 

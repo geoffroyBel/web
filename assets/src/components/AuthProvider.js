@@ -13,7 +13,6 @@ const AuthProvider = ({ location, tryLocalSignin }) => {
 		//car tt requette avec rtr token expired or not found
 		// will send back to login
 		if (!token && !excludeRoutes.includes(pathname)) {
-			alert("hhhhhh");
 			tryLocalSignin(() => navigate("/login"));
 		} else if (pathname === "/signupConfirm" && !user) {
 			navigate("/register");

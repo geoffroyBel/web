@@ -75,7 +75,7 @@ export default function Categories({ iconSize = 50, handleSelect }) {
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
-		alert(categories[newValue].id);
+		// alert(categories[newValue].id);
 		handleSelect(categories[newValue]);
 	};
 
