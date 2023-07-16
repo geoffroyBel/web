@@ -596,17 +596,17 @@ export default () => {
 												key={`hh-${index}`}
 												validationSchema={item.validationSchema}
 												onSubmit={(values) => {
-													handleSubmit();
-													// if (item.onSubmit) {
-													// 	dispatch(
-													// 		item.onSubmit(
-													// 			{ ...values, prestationId, user },
-													// 			() => handleSubmit()
-													// 		)
-													// 	);
-													// } else {
-													// 	handleSubmit();
-													// }
+													//handleSubmit();
+													if (item.onSubmit) {
+														dispatch(
+															item.onSubmit(
+																{ ...values, prestationId, user },
+																() => handleSubmit()
+															)
+														);
+													} else {
+														handleSubmit();
+													}
 												}}>
 												<StepContainer
 													variants={variantsStepContainer}
