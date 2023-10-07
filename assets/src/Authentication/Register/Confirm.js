@@ -28,10 +28,16 @@ export default connect(
 				onClick={() => navigate("/register")}
 				style={{ width: "100%" }}
 				variant='transparent'>
-				<Typography fontWeight={"light"} variant='button' color='text.light'>
+				<Typography
+					fontWeight={"light"}
+					variant='button'
+					color='text.light'>
 					Don't have an account?
 				</Typography>
-				<Typography ml={1} variant='button' color='text.success'>
+				<Typography
+					ml={1}
+					variant='button'
+					color='text.success'>
 					Sign Up Here!
 				</Typography>
 			</Button>
@@ -57,7 +63,7 @@ export default connect(
 					onSubmit={
 						(values) => {
 							signUpConfirm({ ...values, userId: user.id }, () =>
-								navigate("/home")
+								navigate("/login")
 							);
 							//signIn(values, () => navigate("/home"));
 						}

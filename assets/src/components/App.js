@@ -29,6 +29,7 @@ import FavoriteSports from "../Home/FavoritesSports";
 import Drawer from "../Home/Drawer";
 import SportDetail from "../Home/Sports/SportDetail";
 import Reservation from "../Home/Reservations";
+import CompanyCreate2 from "../Profile/edit/CompanyCreate2";
 
 const App = () => {
 	const location = useLocation();
@@ -124,6 +125,10 @@ const App = () => {
 					<Route
 						path='company/create/:page'
 						element={<Profile />}
+					/>
+					<Route
+						path='company/test/'
+						element={<CompanyCreate2 />}
 					/>
 				</Route>
 			</Routes>

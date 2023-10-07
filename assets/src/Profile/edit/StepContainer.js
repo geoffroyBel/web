@@ -8,6 +8,7 @@ import styled from "@emotion/styled";
 const Container = styled((props) => {
 	return <motion.div {...props} />;
 })(() => ({
+	position: "relative",
 	width: "100%",
 	display: "flex",
 	flexDirection: "column",

@@ -59,6 +59,7 @@ class Abonnement
 
     
     #[ORM\ManyToOne(inversedBy: 'abonnements')]
+    #[ORM\JoinColumn( nullable: true,onDelete:"SET NULL")]
     #[Groups(["post", "get-owner", "post-reservation"])]
     private ?Prestation $prestation = null;
 

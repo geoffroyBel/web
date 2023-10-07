@@ -2,7 +2,15 @@ import React, { useEffect } from "react";
 import { connect, useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import * as authActions from "../store/actions/auth";
-const excludeRoutes = ["/signin", "/signup", "/signupConfirm"];
+const excludeRoutes = [
+	"/signin",
+	"/signup",
+	"/signupConfirm",
+	"/home",
+	"/register",
+	"/confirm",
+	"/confirm/",
+];
 
 const AuthProvider = ({ location, tryLocalSignin }) => {
 	const navigate = useNavigate();

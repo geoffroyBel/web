@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 const settings = ["Profile", "Logout"];
 import * as actionsAuth from "../../store/actions/auth";
+import { ButtonBase } from "@mui/material";
 export default function NavBar({
 	position = "relative",
 	title = "My Profile",
@@ -119,31 +120,25 @@ export default function NavBar({
 						{iconRight}
 					</IconButton> */}
 					<div>
-						<IconButton
-							size='large'
-							aria-label='account of current user'
-							aria-controls='menu-appbar'
-							aria-haspopup='true'
-							onClick={handleMenu}
-							sx={{
-								marginRight: 1,
-								boxShadow: "0px 0px 1px gray",
-								color,
-							}}>
-							<AccountCircle />
-						</IconButton>
+						<ButtonBase>
+							<IconButton
+								size='large'
+								aria-label='account of current user'
+								aria-controls='menu-appbar'
+								aria-haspopup='true'
+								onClick={handleMenu}
+								sx={{
+									marginRight: 1,
+									boxShadow: "0px 0px 1px gray",
+									color,
+								}}>
+								<AccountCircle />
+							</IconButton>
+						</ButtonBase>
 						<Menu
 							id='menu-appbar'
 							anchorEl={anchorEl}
-							anchorOrigin={{
-								vertical: "top",
-								horizontal: "right",
-							}}
 							keepMounted
-							transformOrigin={{
-								vertical: "top",
-								horizontal: "right",
-							}}
 							open={Boolean(anchorEl)}
 							onClose={handleClose}>
 							{settings.map((setting, index) => {

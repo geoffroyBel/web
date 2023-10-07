@@ -165,7 +165,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     private ?Cart $cart = null;
 
-    #[Groups(["list_prestation"])]
+    #[Groups(["list_prestation", "post"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $picture = null;
 

@@ -8,6 +8,7 @@ const Footer = styled(Box)(({ theme }) => ({
 	position: "fixed",
 	bottom: 0,
 	width: "100%",
+	zIndex: 100,
 	// //flex: 0.2,
 	// height: 100,
 

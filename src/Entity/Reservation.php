@@ -58,6 +58,7 @@ class Reservation
 
     #[Groups(["list-reservation"])]
     #[ORM\ManyToOne(inversedBy: 'reservations')]
+    #[ORM\JoinColumn( nullable: true,onDelete: "CASCADE")]
     private ?Prestation $prestation = null;
 
     #[Groups(["get-admin", "get-owner", "post-reservation"])]

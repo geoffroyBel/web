@@ -18,6 +18,7 @@ class CartItem
     private ?int $id = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn( nullable: true,onDelete: "CASCADE")]
     private ?Prestation $prestation = null;
 
     #[ORM\Column]

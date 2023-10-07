@@ -26,7 +26,9 @@ function Copyright(props) {
 			align='center'
 			{...props}>
 			{"Copyright © "}
-			<Link color='inherit' href='https://mui.com/'>
+			<Link
+				color='inherit'
+				href='https://mui.com/'>
 				Your Website
 			</Link>{" "}
 			{new Date().getFullYear()}
@@ -59,7 +61,7 @@ const SignupConfirm = ({ signUpConfirm, auth }) => {
 		initialValues: { confirmCode: "" },
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			signUpConfirm({ ...values, userId: user.id }, () => navigate("/home"));
+			signUpConfirm({ ...values, userId: user.id }, () => navigate("/login"));
 		},
 	});
 	const containerVariants = {
@@ -102,7 +104,9 @@ const SignupConfirm = ({ signUpConfirm, auth }) => {
 				{/* <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
 					<LockOutlinedIcon />
 				</Avatar> */}
-				<Typography component='h1' variant='h5'>
+				<Typography
+					component='h1'
+					variant='h5'>
 					Confirm code
 				</Typography>
 				<Box
@@ -144,13 +148,20 @@ const SignupConfirm = ({ signUpConfirm, auth }) => {
 					</Box>
 
 					<Grid container>
-						<Grid item xs>
-							<Link href='#' variant='body2'>
+						<Grid
+							item
+							xs>
+							<Link
+								href='#'
+								variant='body2'>
 								Forgot password?
 							</Link>
 						</Grid>
 						<Grid item>
-							<Link href='#' to='/signup' variant='body2'>
+							<Link
+								href='#'
+								to='/signup'
+								variant='body2'>
 								{"Don't have an account? Sign Up"}
 							</Link>
 						</Grid>

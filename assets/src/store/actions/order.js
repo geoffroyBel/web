@@ -19,12 +19,14 @@ const CONFIG = {
 export const createAbonnement =
 	(prestationId = 14, tarifId = 32, quantity) =>
 	async (dispatch) => {
+		console.log(prestationId);
+		console.log(tarifId);
 		try {
 			const { data } = await api.post(
 				`/abonnements`,
 				{
-					prestation: `/api/prestations/${prestationId}`,
-					tarif: `/api/tarifs/${tarifId}`,
+					prestation: `/api/prestations/51`,
+					tarif: `/api/tarifs/42`,
 					quantity: 1,
 				},
 				{ withCredentials: true }
@@ -37,7 +39,7 @@ export const createAbonnement =
 			// });
 			//dispatch({ type: FETCH_PRESTATIONS, payload: data["hydra:member"] });
 		} catch (error) {
-			console.log(error);
+			console.log(error.message);
 			dispatch({ type: ERROR, payload: error.response });
 		}
 	};

@@ -45,6 +45,7 @@ const MyCard = ({
 	headerTitle,
 	title,
 	description,
+	avatarImg = null,
 	author,
 	imageUrl = "https://picsum.photos/200",
 	width,
@@ -112,11 +113,18 @@ const MyCard = ({
 					},
 				}}
 				avatar={
-					<Avatar
-						sx={{ width: 60, height: 60, bgcolor: "primary.main" }}
-						aria-label='recipe'>
-						R
-					</Avatar>
+					avatarImg ? (
+						<Avatar
+							alt='Remy Sharp'
+							src={avatarImg}
+						/>
+					) : (
+						<Avatar
+							sx={{ width: 60, height: 60, bgcolor: "primary.main" }}
+							aria-label='recipe'>
+							R
+						</Avatar>
+					)
 				}
 				titleTypographyProps={{
 					fontSize: 20,

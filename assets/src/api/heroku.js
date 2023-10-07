@@ -1,8 +1,7 @@
 import axios from "axios";
 const instance = axios.create({
 	//baseURL: "http://127.0.0.1:8000/api",
-
-	baseURL: "https://cryptic-badlands-94917.herokuapp.com/api",
+	baseURL: "https://coachextreme-4cd9495b8d04.herokuapp.com/api",
 });
 
 instance.interceptors.request.use(

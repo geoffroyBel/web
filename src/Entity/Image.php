@@ -44,6 +44,7 @@ class Image
     private ?User $owner = null;
 
     #[ORM\ManyToOne(inversedBy: 'images')]
+    #[ORM\JoinColumn( nullable: true,onDelete: "CASCADE")]
     private ?Prestation $prestation = null;
 
     public function getId(): ?int

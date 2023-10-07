@@ -77,13 +77,17 @@ export default ({
 	if (item && item.images[0]) {
 		url = item.images[0].url;
 	}
+	console.log("--------");
+	console.log(item);
 	const like = useTransform(x, [0, wWidth / 4], [0, 1]);
 	const nope = useTransform(x, [-wWidth / 4, 0], [1, 0]);
+	if (!item) return null;
 	return (
 		<MyCard
+			avatarImg={item.company.owner.picture}
 			component={motion.div}
 			imageUrl={url}
-			headerTitle={username}
+			headerTitle={item.company.name}
 			color={backgroundColor}
 			{...{ title }}
 			{...{ description }}

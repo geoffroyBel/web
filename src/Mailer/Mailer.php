@@ -39,7 +39,7 @@ class Mailer
        // $qrCode = $this->qrCodeFactory->create('QR Code', ['size' => 200]);
         $email = (new TemplatedEmail())
             ->from(new Address('slideguide76@gmail.com'))
-            ->to(new Address('slideguide76@gmail.com'))
+            ->to(new Address($user->getEmail()))
             ->subject('Api Thanks for signing up!')
 
             // path of the Twig template to render

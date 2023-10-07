@@ -40,6 +40,7 @@ class Tarif
     private ?int $credits = null;
 
     #[ORM\ManyToOne(inversedBy: 'tarifs')]
+    #[ORM\JoinColumn( nullable: true,onDelete: "CASCADE")]
     private ?Prestation $prestation = null;
 
     #[ORM\Column(length: 255, nullable: true)]

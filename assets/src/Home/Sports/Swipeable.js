@@ -151,12 +151,13 @@ export default forwardRef(
 		// }, []);
 		let url = "/static/images/cards/contemplative-reptile.jpg";
 		const sport = item?.categories[0]?.title || "Sport";
-		const type = item?.type;
+		const type = item?.type.name;
 		const teacher = item?.company.owner.username;
 		if (item && item.images[0]) {
 			url = item.images[0].url;
 		}
 		console.log(item);
+		console.log(type);
 		return (
 			<Box
 				component={motion.div}

@@ -33,6 +33,7 @@ class Horaire
     private ?\DateTimeInterface $endTime = null;
 
     #[ORM\ManyToOne(inversedBy: 'horaires')]
+    #[ORM\JoinColumn( nullable: true,onDelete: "CASCADE")]
     private ?Prestation $prestation = null;
 
     #[ORM\OneToMany(mappedBy: 'horaire', targetEntity: Reservation::class)]

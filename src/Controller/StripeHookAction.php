@@ -3,7 +3,7 @@ namespace App\Controller;
 
 
 use App\Repository\CompanyRepository;
-
+use App\Repository\UserRepository;
 use App\Services\StripeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -22,6 +22,7 @@ Class StripeHookAction extends AbstractController {
         private LoggerInterface $logger, 
         private EntityManagerInterface $manager, 
         private CompanyRepository $companyRepository,
+        private UserRepository $userRepository,
         // private AbonnementFilter $filter,
         private AbonnementService $abonnementService
         )
@@ -102,7 +103,8 @@ Class StripeHookAction extends AbstractController {
                 // $this->logger->info($account["charges_enabled"]);
                 if($account->id) {
                     $company = $this->companyRepository->findOneBy(["accountID" => $account->id]);
-                    
+                    $user = $company->getOwner();
+                    $user->setRoles(["R0LE_COMPANY"]); 
                     $company->setAccountID($account->id);
 
                     if($account->payouts_enabled && $account->charges_enabled) {

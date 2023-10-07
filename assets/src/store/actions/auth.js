@@ -183,22 +183,21 @@ export const signIn =
 export const signUp =
 	({ image_profile, ...rest }, completion = () => {}) =>
 	async (dispatch) => {
-		console.log("Sign up");
-
+		let payload = { ...rest };
 		try {
-			const { data: user } = await api.post("/users", rest);
-
 			if (image_profile) {
 				const { data: presign } = await api.post("/image/presignUrl", {
 					preSignUrl: "hhhhhh",
 				});
 
 				await upload(image_profile[0], presign.uri);
-				await api.post("/images", {
-					user: `/api/users/${user.id}`,
-					url: `https://${presign.host}${presign.path}`,
-				});
+				payload.picture = `https://${presign.host}${presign.path}`;
+				// await api.post("/images", {
+				// 	user: `/api/users/${user.id}`,
+				// 	url: `https://${presign.host}${presign.path}`,
+				// });
 			}
+			const { data: user } = await api.post("/users", payload);
 			dispatch({ type: IS_LOADING, payload: false });
 			dispatch({ type: SIGN_UP, payload: user });
 			completion();
